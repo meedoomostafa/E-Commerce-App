@@ -1,0 +1,12 @@
+404: Not Found
+# .NET-specific ignores
+bin/
+obj/
+*.user
+*.suo
+*.cache
+*.log
+*.pdb
+*.vs
+*.sln.dotsettings
+.idea/
