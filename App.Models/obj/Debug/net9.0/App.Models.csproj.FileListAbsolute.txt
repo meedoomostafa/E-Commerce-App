@@ -1,0 +1,11 @@
+/home/medo/RiderProjects/E-CommerceApp/App.Models/bin/Debug/net9.0/App.Models.deps.json
+/home/medo/RiderProjects/E-CommerceApp/App.Models/bin/Debug/net9.0/App.Models.dll
+/home/medo/RiderProjects/E-CommerceApp/App.Models/bin/Debug/net9.0/App.Models.pdb
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/App.Models.GeneratedMSBuildEditorConfig.editorconfig
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/App.Models.AssemblyInfoInputs.cache
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/App.Models.AssemblyInfo.cs
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/App.Models.csproj.CoreCompileInputs.cache
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/App.Models.dll
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/refint/App.Models.dll
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/App.Models.pdb
+/home/medo/RiderProjects/E-CommerceApp/App.Models/obj/Debug/net9.0/ref/App.Models.dll
