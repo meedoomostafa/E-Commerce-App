@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Repositories.Database;
 
-public class AppDbContext : IdentityDbContext<IdentityUser>
+public class AppDbContext : IdentityDbContext<AppUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
@@ -17,6 +17,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        new AppUserModelConfigrations().Configure(modelBuilder.Entity<AppUser>());
         new CategoriesModelConfigrations().Configure(modelBuilder.Entity<Category>());
         new ProductModelConfigrations().Configure(modelBuilder.Entity<Product>());
         new OrderModelConfigrations().Configure(modelBuilder.Entity<Order>());
@@ -25,8 +26,7 @@ public class AppDbContext : IdentityDbContext<IdentityUser>
         new CartItemModelConfigrations().Configure(modelBuilder.Entity<CartItem>());
         new ReviewModelConfigrations().Configure(modelBuilder.Entity<Review>());
     }
-
-    public DbSet<AppUser> Users { get; set; }
+    
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<Order> Orders { get; set; }
