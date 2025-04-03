@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -11,17 +12,24 @@
 </head>
 <body>
 <header>
-    <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-custom border-bottom box-shadow mb-3">
+    <nav class="navbar navbar-expand-lg navbar-custom shadow-sm">
         <div class="container-fluid">
-            <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">E_CommerceApp</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                <i class="fas fa-store me-2"></i>E-CommerceApp
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Product" asp-action="Index">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">Categories</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" asp-area="" asp-controller="Community" asp-action="Index">Community</a>
@@ -32,8 +40,17 @@
                     <li class="nav-item">
                         <a class="nav-link cart-icon" asp-area="" asp-controller="Cart" asp-action="Index">
                             <i class="fas fa-shopping-cart"></i>
-                            <span class="badge">0</span> <!-- Placeholder for cart item count -->
+                            <span class="badge">@(ViewBag.CartItemCount ?? 0)</span>
                         </a>
+                    </li>
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-area="Admin" asp-controller="ProductManagement" asp-action="Index">Product Management</a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" asp-area="" asp-controller="RestrictedProducts" asp-action="Index">Restricted Products</a>
                     </li>
                     @if (User.Identity.IsAuthenticated)
                     {
@@ -59,8 +76,8 @@
     </nav>
 </header>
 
-<div class="container main-content">
-    <main role="main" class="pb-3">
+<div class="container-fluid main-content">
+    <main role="main" class="pb-5">
         <!-- Loading spinner -->
         <div class="loading-spinner">
             <div class="spinner-border text-primary" role="status">
@@ -71,20 +88,32 @@
     </main>
 </div>
 
-<footer class="border-top footer-custom text-muted">
+<footer class="footer-custom text-muted">
     <div class="container">
-        <div class="mb-2">
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a> |
-            <a asp-area="" asp-controller="About" asp-action="Index">About Us</a> |
-            <a asp-area="" asp-controller="Contact" asp-action="Index">Contact Us</a>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <h5>About E-CommerceApp</h5>
+                <p>We provide the best products for your needs. Shop with us and experience quality and convenience.</p>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a></li>
+                    <li><a asp-area="" asp-controller="About" asp-action="Index">About Us</a></li>
+                    <li><a asp-area="" asp-controller="Contact" asp-action="Index">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4 mb-3">
+                <h5>Follow Us</h5>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
         </div>
-        <div class="social-icons mb-2">
-            <a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
-        </div>
-        <div>
-            © 2025 - E_CommerceApp
+        <div class="text-center pt-3 border-top">
+            © 2025 - E-CommerceApp
         </div>
     </div>
 </footer>

@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\App.Repositories\App.Repositories.csproj" />
+      <ProjectReference Include="..\App.Utiltity\App.Utiltity.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -22,6 +23,16 @@
         <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       </PackageReference>
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Areas\Customer\Controllers\" />
+      <Folder Include="Areas\Customer\Views\" />
+      <Folder Include="wwwroot\images\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Areas\Admin\Views\Product\Index.cshtml" />
     </ItemGroup>
 
 </Project>
