@@ -1,7 +1,7 @@
 using App.Models;
 using FluentValidation;
 
-namespace App.Validation.Validators;
+namespace App.Validation;
 
 public class ProductValidator : AbstractValidator<Product>
 {

@@ -17,7 +17,5 @@ public class CartItemModelConfigrations : IEntityTypeConfiguration<CartItem>
         builder.HasOne(p => p.Product)
             .WithMany(ca => ca.CartItems)
             .HasForeignKey(Id => Id.ProductId);
-        
-        
     }
 }

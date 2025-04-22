@@ -1,21 +1,27 @@
 using System.Diagnostics;
+using App.Models;
+using App.Repositories.AppRepository.RepositoriesInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using E_CommerceApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
-    public HomeController(ILogger<HomeController> logger)
+    private readonly IUnitOfWork _unitOfWork;
+    public HomeController(ILogger<HomeController> logger, IUnitOfWork unitOfWork)
     {
         _logger = logger;
+        _unitOfWork = unitOfWork;
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        return View();
+        var products = await 
+            _unitOfWork.Product.GetAllAsync(include: q=>q.Include(c => c.Category));
+        return View(products);
     }
 
     public IActionResult Privacy()

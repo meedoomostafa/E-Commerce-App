@@ -16,17 +16,20 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager; // Added for role management
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
             UserManager<AppUser> userManager,
             SignInManager<AppUser> signInManager,
+            RoleManager<IdentityRole> roleManager, // Added
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
             _logger = logger;
             _emailSender = emailSender;
         }
@@ -48,9 +51,11 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-            
+
             [Required]
-            public string Phone { get; set; }
+            [Phone]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; } // Renamed to match AppUser
 
             [Required]
             [Display(Name = "First Name")]
@@ -83,7 +88,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                 {
                     UserName = Input.Email,
                     Email = Input.Email,
-                    PhoneNumber = Input.Phone,
+                    PhoneNumber = Input.PhoneNumber, // Updated to match property name
                     FirstName = Input.FirstName,
                     LastName = Input.LastName
                 };
@@ -91,9 +96,13 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("User created a new account with password.");
+                    _logger.LogInformation("User {Email} created a new account with password.", Input.Email);
 
-                    // Optionally assign a role, e.g., "Customer"
+                    // Ensure the "Customer" role exists
+                    if (!await _roleManager.RoleExistsAsync("Customer"))
+                    {
+                        await _roleManager.CreateAsync(new IdentityRole("Customer"));
+                    }
                     await _userManager.AddToRoleAsync(user, "Customer");
 
                     var userId = await _userManager.GetUserIdAsync(user);
