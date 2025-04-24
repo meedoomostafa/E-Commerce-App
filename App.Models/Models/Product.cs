@@ -15,4 +15,5 @@ public class Product
     public ICollection<OrderItem>? OrderItems { get; set; }
     public ICollection<Review>? Reviews{ get; set; }
     public ICollection<CartItem>? CartItems { get; set; }
+    public ICollection<WishlistItem>? WishlistItems { get; set; }
 }

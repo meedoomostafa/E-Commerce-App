@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 namespace E_CommerceApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
+[Authorize(Roles = "Admin")]
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;

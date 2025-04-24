@@ -10,4 +10,5 @@ public class AppUser : IdentityUser
     public ICollection<Order>? Orders { get; set; }
     public ICollection<Review>? Reviews { get; set; }
     public ShoppingCart? ShoppingCart { get; set; }
+    public Wishlist? Wishlist { get; set; }
 }

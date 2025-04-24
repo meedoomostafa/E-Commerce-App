@@ -4,5 +4,7 @@ public interface IUnitOfWork
 {
     IProductRepository Product { get; }
     ICategoryRepository Category { get; }
+    IShoppingCartRepository ShoppingCart { get; }
+    IWishlistRepository Wishlist { get; }
     Task SaveChanges();
 }

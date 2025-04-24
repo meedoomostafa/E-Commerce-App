@@ -25,6 +25,8 @@ public class AppDbContext : IdentityDbContext<AppUser>
         new ShoppingCartModelConfigrations().Configure(modelBuilder.Entity<ShoppingCart>());
         new CartItemModelConfigrations().Configure(modelBuilder.Entity<CartItem>());
         new ReviewModelConfigrations().Configure(modelBuilder.Entity<Review>());
+        new WishListModelConfigrations().Configure(modelBuilder.Entity<Wishlist>());
+        new WishListItemModelConfigrations().Configure(modelBuilder.Entity<WishlistItem>());
     }
     
     public DbSet<Category> Categories { get; set; }
@@ -34,4 +36,6 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
     public DbSet<CartItem> CartItems { get; set; }
     public DbSet<Review> Reviews { get; set; }
+    public DbSet<Wishlist> Wishlists { get; set; } // Added
+    public DbSet<WishlistItem> WishlistItems { get; set; } // Added
 }

@@ -24,6 +24,17 @@ public class HomeController : Controller
         return View(products);
     }
 
+    public async Task<IActionResult> Details(int? id)
+    {
+        var product = await _unitOfWork.Product
+            .GetByIdAsync(id.Value, include: q=>q.Include(c => c.Category));
+        if (product == null)
+        {
+            return NotFound();
+        }
+        return View(product);
+    }
+
     public IActionResult Privacy()
     {
         return View();

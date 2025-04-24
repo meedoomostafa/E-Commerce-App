@@ -6,7 +6,7 @@
 }
 
 <div class="container mt-5">
-    <h2 class="mb-4 text-center">Welcome to E-Commerce App</h2>
+    <h2 class="mb-4 text-center">Shopping Now!</h2>
 
     @if (TempData["Error"] != null)
     {
@@ -21,24 +21,25 @@
             @foreach (var product in Model)
             {
                 <div class="col-md-4 mb-4">
-                    <div class="card shadow-sm h-100">
-                        @if (!string.IsNullOrEmpty(product.ImageUrl))
-                        {
-                            <img src="@product.ImageUrl" class="card-img-top" alt="@product.Name" style="height: 200px; object-fit: cover;" />
-                        }
-                        else
-                        {
-                            <img src="/images/placeholder.jpg" class="card-img-top" alt="Placeholder" style="height: 200px; object-fit: cover;" />
-                        }
-                        <div class="card-body">
-                            <h5 class="card-title">@product.Name</h5>
-                            <p class="card-text">@product.Description</p>
-                            <p class="card-text"><strong>Price:</strong> $@product.Price</p>
-                            <p class="card-text"><strong>Stock:</strong> @product.Stock</p>
-                            <p class="card-text"><strong>Category:</strong> @(product.Category?.Name ?? "No Category")</p>
-                            <a asp-area="Customer" asp-controller="Product" asp-action="Detail" asp-route-id="@product.Id" class="btn btn-primary">View Details</a>
+                    <a asp-action="Details" asp-route-id="@product.Id" style="text-decoration: none; color: inherit;">
+                        <div class="card shadow-sm h-100">
+                            @if (!string.IsNullOrEmpty(product.ImageUrl))
+                            {
+                                <img src="@product.ImageUrl" class="card-img-top rounded" alt="@product.Name" style="height: 200px; object-fit: cover;" />
+                            }
+                            else
+                            {
+                                <img src="/images/placeholder.jpg" class="card-img-top" alt="Placeholder" style="height: 200px; object-fit: cover;" />
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">@product.Name</h5>
+                                <p class="card-text">@product.Description</p>
+                                <p class="card-text"><strong>Price:</strong> $@product.Price</p>
+                                <p class="card-text"><strong>Stock:</strong> @product.Stock</p>
+                                <p class="card-text"><strong>Category:</strong> @(product.Category?.Name ?? "No Category")</p>
+                            </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             }
         </div>

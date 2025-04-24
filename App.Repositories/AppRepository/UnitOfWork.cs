@@ -8,12 +8,16 @@ public class UnitOfWork : IUnitOfWork
     private AppDbContext _context;
     public IProductRepository Product { get; private set;}
     public ICategoryRepository Category { get; private set;}
+    public IWishlistRepository Wishlist { get; private set;}
+    public IShoppingCartRepository ShoppingCart { get; private set;}
 
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
         Product = new ProductRepository(_context);
         Category = new CategoryRepository(_context);
+        Wishlist = new WishlistRepository(_context);
+        ShoppingCart = new ShoppingCartRepository(_context);
     }
     public async Task SaveChanges()
     {

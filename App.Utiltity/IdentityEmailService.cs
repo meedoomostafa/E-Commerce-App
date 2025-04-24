@@ -18,14 +18,9 @@ namespace E_CommerceApp.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public Task SendEmailAsync(string email, string subject, string htmlMessage)
         {
-            var apiKey = _configuration["SendGrid:ApiKey"];
-            var client = new SendGridClient(apiKey);
-            var from = new EmailAddress(_configuration["SendGrid:FromEmail"], _configuration["SendGrid:FromName"]);
-            var to = new EmailAddress(email);
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, null, htmlMessage);
-            await client.SendEmailAsync(msg);
+            return Task.CompletedTask;
         }
     }
 }
