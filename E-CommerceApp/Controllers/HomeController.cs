@@ -1,8 +1,10 @@
 using System.Diagnostics;
+using System.Security.Claims;
 using App.Models;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
 using Microsoft.AspNetCore.Mvc;
 using E_CommerceApp.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Controllers;
@@ -33,6 +35,65 @@ public class HomeController : Controller
             return NotFound();
         }
         return View(product);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    [Authorize]
+    public async Task<IActionResult> AddToCart(int productId)
+    {
+        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (userId == null)
+        {
+            return Unauthorized("user not found");
+        }
+        
+        var shoppingCart = await _unitOfWork.ShoppingCart
+            .GetFirstOrDefaultAsync(c => c.UserId == userId 
+                ,include: q=>q.Include(c => c.Items));
+        
+        if (shoppingCart == null)
+        {
+            shoppingCart = new ShoppingCart
+            {
+                UserId = userId,
+                Items = new List<CartItem>()
+            };
+            await _unitOfWork.ShoppingCart.Add(shoppingCart);
+            await _unitOfWork.SaveChanges();
+        }
+        
+        var cartItem = shoppingCart.Items.FirstOrDefault(c => c.ProductId == productId);
+        if (cartItem != null)
+        {
+            cartItem.Quantity++;
+        }
+        else
+        {
+            cartItem = new CartItem
+            {
+                ProductId = productId,
+                Quantity = 1
+            };
+            shoppingCart.Items.Add(cartItem);
+        }
+        await _unitOfWork.SaveChanges();
+        TempData["Success"] = "Product added to cart";
+        return RedirectToAction(nameof(Index));
+    }
+    public async Task<IActionResult> Search(string query)
+    {
+        if (string.IsNullOrWhiteSpace(query))
+        {
+            return RedirectToAction("Index");
+        }
+
+        var products = await _unitOfWork.Product
+            .GetAllAsync(filter: p => p.Name.Contains(query)
+            , include: q=>q.Include(c => c.Category));
+        return View("SearchResults", products);
     }
 
     public IActionResult Privacy()

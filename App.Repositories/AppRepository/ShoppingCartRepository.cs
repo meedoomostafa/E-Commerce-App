@@ -1,7 +1,9 @@
+using System.Linq.Expressions;
 using App.Models;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
 using App.Repositories.Database;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace App.Repositories.AppRepository;
 
@@ -21,5 +23,16 @@ public class ShoppingCartRepository : Repository<ShoppingCart> , IShoppingCartRe
         {
             shoppingCart.Items = entity.Items;
         }
+    }
+
+    public async Task<ShoppingCart?> GetFirstOrDefaultAsync(Expression<Func<ShoppingCart, bool>> filter,
+        Func<IQueryable<ShoppingCart>, IIncludableQueryable<ShoppingCart, object>>? include = null)
+    {
+        IQueryable<ShoppingCart> query = _context.ShoppingCarts;
+        if (include != null)
+        {
+            query = include(query);
+        }
+        return await query.FirstOrDefaultAsync(filter);
     }
 }

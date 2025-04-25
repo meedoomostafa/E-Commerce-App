@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using App.Models;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
 using App.Repositories.Database;
@@ -51,9 +52,14 @@ public class Repository<T> : IRepository<T>  where T : class
         return await query.FirstOrDefaultAsync(e => EF.Property<int>(e, "Id") == id);
     }
 
-    public async Task<IEnumerable<T>> GetAllAsync(Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
+    public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
     {
         IQueryable<T> query = _context.Set<T>();
+        if (filter != null)
+        {
+            query = query.Where(filter);
+        }
+        
         if (include != null)
         {
             query = include(query);

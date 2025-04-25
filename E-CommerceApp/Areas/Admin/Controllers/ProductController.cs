@@ -1,5 +1,6 @@
 using App.Models;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using E_CommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -8,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 namespace E_CommerceApp.Areas.Admin.Controllers;
 
 [Area("Admin")]
-[Authorize(Roles = "Admin")]
+[Authorize(Roles = SD.RoleAdmin)]
 public class ProductController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
@@ -25,7 +26,7 @@ public class ProductController : Controller
         try
         {
             var products = await _unitOfWork.Product
-                .GetAllAsync(q=> q.Include(p => p.Category));
+                .GetAllAsync(null,q=> q.Include(p => p.Category));
             return View(nameof(Index),products);
         }
         catch (Exception)
