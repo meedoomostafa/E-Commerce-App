@@ -24,15 +24,4 @@ public class ShoppingCartRepository : Repository<ShoppingCart> , IShoppingCartRe
             shoppingCart.Items = entity.Items;
         }
     }
-
-    public async Task<ShoppingCart?> GetFirstOrDefaultAsync(Expression<Func<ShoppingCart, bool>> filter,
-        Func<IQueryable<ShoppingCart>, IIncludableQueryable<ShoppingCart, object>>? include = null)
-    {
-        IQueryable<ShoppingCart> query = _context.ShoppingCarts;
-        if (include != null)
-        {
-            query = include(query);
-        }
-        return await query.FirstOrDefaultAsync(filter);
-    }
 }

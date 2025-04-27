@@ -1,0 +1,102 @@
+@model App.Models.ViewModels.ProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+            <!-- Profile Header -->
+            <div class="text-center mb-5">
+                <i class="fas fa-user-circle fa-3x text-primary mb-3"></i>
+                <h2 class="fw-bold">@Model.User.FirstName @Model.User.LastName</h2>
+                <p class="text-muted">@Model.User.Email</p>
+            </div>
+
+            <!-- Personal Details -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Personal Details</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-envelope me-2"></i>Email</span>
+                            <span>@Model.User.Email</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span><i class="fas fa-phone me-2"></i>Phone Number</span>
+                            <span>@(string.IsNullOrEmpty(Model.User.PhoneNumber) ? "Not provided" : Model.User.PhoneNumber)</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Shopping Cart -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Shopping Cart</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.CartItems.Any())
+                    {
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            @foreach (var item in Model.CartItems)
+                            {
+                                <div class="col">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <img src="@item.Product.ImageUrl" class="card-img-top" alt="@item.Product.Name" />
+                                        <div class="card-body">
+                                            <h6 class="card-title">@item.Product.Name</h6>
+                                            <p class="card-text text-muted small">@item.Product.Description</p>
+                                            <p class="card-text fw-bold">$@item.Product.Price</p>
+                                            <p class="card-text small text-muted">Quantity: @item.Quantity</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted">Your shopping cart is empty.</p>
+                    }
+                </div>
+            </div>
+
+            <!-- Wishlist -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Wishlist</h5>
+                </div>
+                <div class="card-body">
+                    @if (Model.WishlistItems.Any())
+                    {
+                        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            @foreach (var item in Model.WishlistItems)
+                            {
+                                <div class="col">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <img src="@item.Product.ImageUrl" class="card-img-top" alt="@item.Product.Name" />
+                                        <div class="card-body">
+                                            <h6 class="card-title">@item.Product.Name</h6>
+                                            <p class="card-text text-muted small">@item.Product.Description</p>
+                                            <p class="card-text fw-bold">$@item.Product.Price</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <p class="text-center text-muted">Your wishlist is empty.</p>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

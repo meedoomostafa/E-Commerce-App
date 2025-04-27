@@ -66,4 +66,14 @@ public class Repository<T> : IRepository<T>  where T : class
         }
         return await query.ToListAsync();
     }
+
+    public Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter, Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null)
+    {
+        IQueryable<T> query = _context.Set<T>();
+        if (include != null)
+        {
+            query = include(query);
+        }
+        return query.FirstOrDefaultAsync(filter);
+    }
 }

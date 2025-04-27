@@ -50,6 +50,31 @@ body {
   left: -5px;
 }
 
+/* Profile Page Styles */
+.card {
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.list-group-item {
+  border: none;
+  padding: 0.75rem 1rem;
+}
+
+.list-group-item i {
+  width: 20px;
+  text-align: center;
+}
+
+.text-primary {
+  color: #007bff !important;
+}
+
 .search-bar {
   position: relative;
 }
@@ -127,3 +152,6 @@ body {
   width: 3rem;
   height: 3rem;
 }
+
+
+

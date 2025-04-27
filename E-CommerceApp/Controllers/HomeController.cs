@@ -1,9 +1,9 @@
 using System.Diagnostics;
 using System.Security.Claims;
 using App.Models;
+using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
 using Microsoft.AspNetCore.Mvc;
-using E_CommerceApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
 
