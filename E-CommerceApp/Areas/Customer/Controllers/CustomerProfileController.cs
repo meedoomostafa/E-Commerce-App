@@ -23,6 +23,7 @@ public class CustomerProfileController : Controller
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
+        
         if (user == null)
         {
             return NotFound($"user not found");
@@ -34,14 +35,16 @@ public class CustomerProfileController : Controller
                     .ThenInclude(i => i.Product));
         
         var wishList = await _unitOfWork.Wishlist.GetFirstOrDefaultAsync(c=>c.UserId == user.Id
-                ,include: q=>q.Include(c => c.Items));
+                ,include: q=>q.Include(c => c.Items)
+                    .ThenInclude(p => p.Product));;
 
         ProfileViewModel profileDataViewModel = new ProfileViewModel
         {
             User = user,
-            CartItems = shoppingCart?.Items,
-            WishlistItems = wishList?.Items 
+            CartItems = shoppingCart?.Items ?? new List<CartItem>(),
+            WishlistItems = wishList?.Items ?? new List<WishlistItem>()
         };
+        
         return View(profileDataViewModel);
     }
 }
