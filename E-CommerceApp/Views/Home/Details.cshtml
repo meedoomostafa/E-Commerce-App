@@ -93,59 +93,61 @@
 @section Scripts {
     <!-- JQuery Favorite AJAX -->
     <script>
-        $(document).ready(function() {
+            $(document).ready(function () {
             var productId = $('input[name="productId"]').val();
 
-            // دالة لتحديث الـ UI بناءً على الحالة
-            function updateUI(isFav) {
-                if (isFav) {
-                    $('#heartIcon').removeClass('text-muted').addClass('text-danger');
-                    $('#favoriteText').text('Remove from Favorites');
-                } else {
-                    $('#heartIcon').removeClass('text-danger').addClass('text-muted');
-                    $('#favoriteText').text('Add to Favorites');
-                }
-            }
+            // عند تحميل الصفحة، تحقق من حالة الفيفوريت من localStorage
+            if (localStorage.getItem('favorite_' + productId) === 'true') {
+            $('#heartIcon').removeClass('text-muted').addClass('text-danger');
+            $('#favoriteText').text('Remove from Favorites');
+        } else {
+            $('#heartIcon').removeClass('text-danger').addClass('text-muted');
+            $('#favoriteText').text('Add to Favorites');
+        }
 
-            // 1. عند تحميل الصفحة، استرجع الحالة وحدث الـ UI
-            var isFavorited = (localStorage.getItem('favorite_' + productId) === 'true');
-            updateUI(isFavorited);
+            $('#favoriteForm').on('submit', function (e) {
+            e.preventDefault();
 
-            $('#favoriteForm').on('submit', function(e) {
-                e.preventDefault();
+            var form = $(this);
+            var formData = form.serialize();
+            var heartIcon = $('#heartIcon');
+            var favoriteText = $('#favoriteText');
 
-                // 2. عكس الحالة
-                isFavorited = !isFavorited;
-                localStorage.setItem('favorite_' + productId, isFavorited);
+            // تحقق من حالة الفيفوريت الحالية في localStorage
+            var isFavorited = localStorage.getItem('favorite_' + productId) === 'false';
 
-                // 3. حدث الـ UI فوراً
-                updateUI(isFavorited);
-
-                // 4. تأثير الأنيميشن
-                $('#heartIcon').addClass('animate__animated animate__heartBeat');
-                setTimeout(function() {
-                    $('#heartIcon').removeClass('animate__animated animate__heartBeat');
-                }, 1000);
-
-                // 5. أرسل التحديث للسيرفر
-                
+            // عكس الحالة وحفظها في localStorage
+            if (isFavorited) {
+            localStorage.setItem('favorite_' + productId, 'true');
+            heartIcon.removeClass('text-muted').addClass('text-danger');
+            favoriteText.text('Remove from Favorites');
+        } else {
+            localStorage.setItem('favorite_' + productId, 'false');
+            heartIcon.removeClass('text-danger').addClass('text-muted');
+            favoriteText.text('Add to Favorites');
+        }
+            // إرسال البيانات إلى السيرفر عبر AJAX
             $.ajax({
-                url: '/Customer/Cart/ToggleFavorite',   // المسار الصحيح داخل الـ area
-                method: 'POST',
-                data: $(this).serialize(),
-                headers: {
-                    // لو عندك [ValidateAntiForgeryToken]
-                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                },
-                success: function(response) {
-                    console.log('Server response:', response);
-                },
-                error: function(xhr, status, error) {
-                    console.error('AJAX Error:', error);
-                    alert('An error occurred while updating your favorite list.');
-                }
-            });
-            });
+            url: '/Customer/Cart/ToggleFavorite', // المسار الصحيح للـ action داخل الـ area
+            method: 'POST',
+            data: formData,  // البيانات المرسلة (الـ productId وغيره)
+            success: function (response) {
+            // استجابة السيرفر
+            console.log('Response:', response);
+            },
+            error: function (xhr, status, error) {
+            console.error('Error:', error);
+            alert('An error occurred while updating your favorite list.');
+        }
+        });
+
+            // إضافة تأثير الأنيميشن
+            heartIcon.addClass('animate__animated animate__heartBeat');
+            setTimeout(function () {
+            heartIcon.removeClass('animate__animated animate__heartBeat');
+        }, 1000);
+        });
         });
     </script>
+
 }

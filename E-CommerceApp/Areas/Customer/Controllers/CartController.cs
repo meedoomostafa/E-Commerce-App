@@ -23,24 +23,32 @@ public class CartController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claimsIdentity = (ClaimsIdentity)User.Identity!;
         var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        if (!string.IsNullOrEmpty(userId))
+        if (string.IsNullOrEmpty(userId))
         {
             return NotFound($"user not found");
         }
+        
         var shoppingCart = await _unitOfWork.ShoppingCart
             .GetFirstOrDefaultAsync(c => c.UserId == userId 
-                ,include: q => q.Include(i => i.Items));
+                ,include: q => q.Include(i => i.Items)
+                    .ThenInclude(p => p.Product));
+
+        if (shoppingCart == null || shoppingCart.Items == null)
+        {
+            ViewBag.Message = "Cart is empty";
+            return View(new List<CartItem>());
+        }
         
-        return View(shoppingCart);
+        return View(shoppingCart.Items);
     }
 
-    [HttpPost]
+    [HttpPost("ToggleFavorite")]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(FavoriteRequestViewModel request)
     {
-        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claimsIdentity = (ClaimsIdentity)User.Identity!;
         var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         
         var productId = request.ProductId;
@@ -53,7 +61,7 @@ public class CartController : Controller
         
         var wishList = await _unitOfWork.Wishlist
             .GetFirstOrDefaultAsync(c=>c.UserId == userId 
-                ,include: q=>q.Include(c => c.Items));
+                ,include: q=>q.Include(c => c.Items)!);
 
         if (wishList == null)
         {
@@ -86,6 +94,36 @@ public class CartController : Controller
         }
         await _unitOfWork.SaveChanges();
         TempData["Success"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
-        return Redirect(returnUrl ?? Url.Action("Index","Home"));
+        return Redirect(returnUrl ?? Url.Action("Index","Home")!);
+    }
+
+    [HttpPost("RemoveFromCart")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> RemoveFromCart(RemoveFromCartViewModel model)
+    {
+        var user = (ClaimsIdentity)User.Identity!;
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("user not found");
+        }
+
+        var itemId = model.ItemId;
+        var url = model.ReturnUrl;
+
+        CartItem cartItem = await _unitOfWork.CartItem
+            .GetFirstOrDefaultAsync(a => a.Id == itemId && a.ShoppingCart.UserId == userId);
+
+        if (cartItem == null)
+        {
+            return NotFound();
+        }
+        
+        _unitOfWork.CartItem.Delete(cartItem);
+        await _unitOfWork.SaveChanges();
+        
+        TempData["Success"] = "Product removed from cart";
+        
+        return Redirect(url ?? Url.Action("Index","Cart")!);
     }
 }

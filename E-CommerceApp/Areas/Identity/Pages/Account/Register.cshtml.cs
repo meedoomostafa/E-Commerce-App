@@ -86,7 +86,6 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            // Initialize roles if they don't exist
             if (!await _roleManager.RoleExistsAsync(SD.RoleCustomer))
             {
                 await _roleManager.CreateAsync(new IdentityRole(SD.RoleCustomer));
