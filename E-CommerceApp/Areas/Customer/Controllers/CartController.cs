@@ -44,7 +44,7 @@ public class CartController : Controller
         return View(shoppingCart.Items);
     }
 
-    [HttpPost("ToggleFavorite")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(FavoriteRequestViewModel request)
     {
@@ -93,7 +93,7 @@ public class CartController : Controller
             wishList.Items.Remove(wishListItem);
         }
         await _unitOfWork.SaveChanges();
-        TempData["Success"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
+        TempData["SuccessFavorite"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
         return Redirect(returnUrl ?? Url.Action("Index","Home")!);
     }
 
@@ -122,7 +122,62 @@ public class CartController : Controller
         _unitOfWork.CartItem.Delete(cartItem);
         await _unitOfWork.SaveChanges();
         
-        TempData["Success"] = "Product removed from cart";
+        TempData["SuccessCart"] = "Product removed from cart";
+        
+        return Redirect(url ?? Url.Action("Index","Cart")!);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DecrementQuantity(UpdateQuantityViewModel cartItemObject)
+    {
+        var cartItemId = cartItemObject.CartItemId;
+        var url = cartItemObject.Url;
+        
+        var cartItem = await _unitOfWork.CartItem
+            .GetFirstOrDefaultAsync(a => a.Id == cartItemId);
+        
+        if (cartItem == null)
+        {
+            return NotFound();
+        }
+        
+        if (cartItem.Quantity > 1)
+        {
+            cartItem.Quantity -= 1;
+            await _unitOfWork.CartItem.Update(cartItem);  
+        }
+        else
+        {
+            _unitOfWork.CartItem.Delete(cartItem);
+        }
+        await _unitOfWork.SaveChanges();
+        
+        TempData["SuccessCart"] = "Product quantity decremented";
+        
+        return Redirect(url ?? Url.Action("Index","Cart")!);
+    }
+    
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> IncrementQuantity(UpdateQuantityViewModel cartItemObject)
+    {
+        var cartItemId = cartItemObject.CartItemId;
+        var url = cartItemObject.Url;
+        
+        var cartItem = await _unitOfWork.CartItem
+            .GetFirstOrDefaultAsync(a => a.Id == cartItemId);
+        
+        if (cartItem == null)
+        {
+            return NotFound();
+        }
+        
+        cartItem.Quantity += 1;
+        await _unitOfWork.CartItem.Update(cartItem);  
+        await _unitOfWork.SaveChanges();
+        
+        TempData["SuccessCart"] = "Product quantity incremented";
         
         return Redirect(url ?? Url.Action("Index","Cart")!);
     }
