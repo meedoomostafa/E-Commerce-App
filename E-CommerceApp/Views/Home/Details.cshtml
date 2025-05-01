@@ -24,10 +24,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         }
+
+        <!-- Product Image -->
         <div class="row justify-content-center">
             <div class="col-md-8">
-
-                <!-- Product Image -->
                 <div class="text-center mb-4">
                     <img src="@(!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/images/placeholder.jpg")"
                          alt="@Model.Name"
@@ -39,7 +39,6 @@
                 <div class="card shadow-sm rounded-4 mb-4">
                     <div class="card-body">
                         <h3 class="card-title mb-4">@Model.Name</h3>
-
                         <p><strong>Description:</strong> @Model.Description</p>
                         <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
                         <p><strong>Stock:</strong> @Model.Stock</p>
@@ -50,7 +49,7 @@
                             @if (Model.Stock > 0)
                             {
                                 <form asp-action="AddToCart" method="post" class="w-100 text-center">
-                                    <input type="hidden" name="productId" value="@Model.Id" />
+                                    <input type="hidden" id="productId" name="productId" value="@Model.Id" />
                                     <button type="submit" class="btn btn-primary px-4">
                                         <i class="fas fa-cart-plus me-2"></i> Add to Cart
                                     </button>
@@ -64,7 +63,7 @@
                             }
 
                             <!-- Favorite Button -->
-                            <form id="favoriteForm" asp-area="Customer" asp-controller="Cart" asp-action="ToggleFavorite" method="post" class="text-center">
+                            <form id="favoriteForm" asp-area="Customer" asp-controller="Favorites" asp-action="ToggleFavorite" method="post" class="text-center">
                                 <input type="hidden" name="productId" value="@Model.Id" />
                                 <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
 
@@ -81,9 +80,61 @@
                 <div class="card shadow-sm rounded-4 mb-4">
                     <div class="card-body">
                         <h5 class="fw-bold mb-3">User Reviews</h5>
-                        <div class="alert alert-info mb-0">
-                            No reviews yet. Be the first to review this product!
-                        </div>
+
+                        @if (Model.Reviews == null || !Model.Reviews.Any())
+                        {
+                            <div class="alert alert-info mb-0">
+                                No reviews yet. Be the first to review this product!
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="list-group">
+                                @foreach (var review in Model.Reviews)
+                                {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6>@review.User?.FirstName @review.User?.LastName</h6>
+                                            <div class="text-warning small">
+                                                @for (int i = 1; i <= 5; i++)
+                                                {
+                                                    <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted")"></i>
+                                                }
+                                            </div>
+                                        </div>
+                                        <p>@review.Comment</p>
+                                        <small class="text-muted">Reviewed on @review.CreatedAt.ToShortDateString()</small>
+                                    </div>
+                                }
+                            </div>
+                        }
+
+                        <!-- Add Review Form -->
+                        <hr />
+                        <h6 class="fw-bold mb-3">Leave a Review</h6>
+                        <form asp-area="Customer" asp-controller="Reviews" asp-action="AddReview" method="post">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+
+                            <div class="mb-3">
+                                <label class="form-label">Rating</label>
+                                <div id="rating-stars" class="d-flex gap-2">
+                                    @for (int i = 1; i <= 5; i++)
+                                    {
+                                        <i class="fas fa-star rating-star text-muted" data-rating="@i"></i>
+                                    }
+                                </div>
+                                <input type="hidden" id="rating" name="rating" value="0" required />
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="comment" class="form-label">Comment (Optional)</label>
+                                <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
+                            </div>
+                            
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            
+                            <button type="submit" class="btn btn-primary">Submit Review</button>
+                        </form>
                     </div>
                 </div>
 
@@ -91,70 +142,96 @@
                 <div class="text-center mt-3">
                     <a asp-action="Index" class="btn btn-secondary px-5 py-2 rounded-3">Back to Products</a>
                 </div>
-
             </div>
         </div>
     }
 </div>
 
 @section Scripts {
-    <!-- JQuery Favorite AJAX -->
+    <!-- Star Rating Script -->
     <script>
-            $(document).ready(function () {
+        document.addEventListener('DOMContentLoaded', function () {
+            const stars = document.querySelectorAll('.rating-star');
+            const ratingValue = document.getElementById('rating'); // Ensure this matches the ID of the hidden input
+
+            stars.forEach(star => {
+                star.addEventListener('click', function () {
+                    const selectedRating = this.getAttribute('data-rating');
+                    ratingValue.value = selectedRating; // Update the hidden input's value
+
+                    // Update star colors
+                    stars.forEach((s, index) => {
+                        s.classList.toggle('text-warning', index < selectedRating);
+                        s.classList.toggle('text-muted', index >= selectedRating);
+                    });
+                });
+
+                star.addEventListener('mouseover', function () {
+                    const hoveredRating = this.getAttribute('data-rating');
+                    stars.forEach((s, index) => {
+                        s.classList.toggle('text-warning', index < hoveredRating);
+                        s.classList.toggle('text-muted', index >= hoveredRating);
+                    });
+                });
+
+                star.addEventListener('mouseout', function () {
+                    const currentRating = ratingValue.value;
+                    stars.forEach((s, index) => {
+                        s.classList.toggle('text-warning', index < currentRating);
+                        s.classList.toggle('text-muted', index >= currentRating);
+                    });
+                });
+            });
+        });
+
+        // Toggle Favorite AJAX
+        $(document).ready(function () {
             var productId = $('input[name="productId"]').val();
 
-            // عند تحميل الصفحة، تحقق من حالة الفيفوريت من localStorage
+            // Check favorite state in localStorage
             if (localStorage.getItem('favorite_' + productId) === 'true') {
-            $('#heartIcon').removeClass('text-muted').addClass('text-danger');
-            $('#favoriteText').text('Remove from Favorites');
-        } else {
-            $('#heartIcon').removeClass('text-danger').addClass('text-muted');
-            $('#favoriteText').text('Add to Favorites');
-        }
+                $('#heartIcon').removeClass('text-muted').addClass('text-danger');
+                $('#favoriteText').text('Remove from Favorites');
+            } else {
+                $('#heartIcon').removeClass('text-danger').addClass('text-muted');
+                $('#favoriteText').text('Add to Favorites');
+            }
 
             $('#favoriteForm').on('submit', function (e) {
-            e.preventDefault();
+                e.preventDefault();
 
-            var form = $(this);
-            var formData = form.serialize();
-            var heartIcon = $('#heartIcon');
-            var favoriteText = $('#favoriteText');
+                var form = $(this);
+                var formData = form.serialize();
+                var heartIcon = $('#heartIcon');
+                var favoriteText = $('#favoriteText');
 
-            // تحقق من حالة الفيفوريت الحالية في localStorage
-            var isFavorited = localStorage.getItem('favorite_' + productId) === 'false';
+                // Toggle favorite state in localStorage
+                var isFavorited = localStorage.getItem('favorite_' + productId) === 'false';
+                localStorage.setItem('favorite_' + productId, isFavorited);
 
-            // عكس الحالة وحفظها في localStorage
-            if (isFavorited) {
-            localStorage.setItem('favorite_' + productId, 'true');
-            heartIcon.removeClass('text-muted').addClass('text-danger');
-            favoriteText.text('Remove from Favorites');
-        } else {
-            localStorage.setItem('favorite_' + productId, 'false');
-            heartIcon.removeClass('text-danger').addClass('text-muted');
-            favoriteText.text('Add to Favorites');
-        }
-            // إرسال البيانات إلى السيرفر عبر AJAX
-            $.ajax({
-            url: '/Customer/Cart/ToggleFavorite', // المسار الصحيح للـ action داخل الـ area
-            method: 'POST',
-            data: formData,  // البيانات المرسلة (الـ productId وغيره)
-            success: function (response) {
-            // استجابة السيرفر
-            console.log('Response:', response);
-            },
-            error: function (xhr, status, error) {
-            console.error('Error:', error);
-            alert('An error occurred while updating your favorite list.');
-        }
-        });
+                heartIcon.toggleClass('text-muted text-danger');
+                favoriteText.text(isFavorited ? 'Remove from Favorites' : 'Add to Favorites');
 
-            // إضافة تأثير الأنيميشن
-            heartIcon.addClass('animate__animated animate__heartBeat');
-            setTimeout(function () {
-            heartIcon.removeClass('animate__animated animate__heartBeat');
-        }, 1000);
-        });
+                // Submit the form via AJAX
+                $.ajax({
+                    url: '/Customer/Favorites/ToggleFavorite',
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        console.log('Response:', response);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating your favorites.');
+                    }
+                });
+
+                // Add animation effect
+                heartIcon.addClass('animate__animated animate__heartBeat');
+                setTimeout(function () {
+                    heartIcon.removeClass('animate__animated animate__heartBeat');
+                }, 1000);
+            });
         });
     </script>
-
 }

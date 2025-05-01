@@ -24,4 +24,6 @@ public class ShoppingCartRepository : Repository<ShoppingCart> , IShoppingCartRe
             shoppingCart.Items = entity.Items;
         }
     }
+
+    
 }

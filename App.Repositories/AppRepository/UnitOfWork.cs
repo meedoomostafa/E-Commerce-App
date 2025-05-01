@@ -11,7 +11,8 @@ public class UnitOfWork : IUnitOfWork
     public IWishlistRepository Wishlist { get; private set;}
     public IShoppingCartRepository ShoppingCart { get; private set;}
     public ICartItemRepository CartItem { get; private set;}
-
+    
+    public IReviewRepository Review { get; private set;}
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
@@ -20,6 +21,7 @@ public class UnitOfWork : IUnitOfWork
         Wishlist = new WishlistRepository(_context);
         CartItem = new CartItemRepository(_context);       
         ShoppingCart = new ShoppingCartRepository(_context);
+        Review = new ReviewRepository(_context);
     }
     public async Task SaveChanges()
     {

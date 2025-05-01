@@ -22,17 +22,26 @@ public class HomeController : Controller
     public async Task<IActionResult> Index()
     {
         var products = await 
-            _unitOfWork.Product.GetAllAsync(include: q=>q.Include(c => c.Category));
+            _unitOfWork.Product.GetAllAsync(include: q=>q.Include(c => c.Category)!);
         return View(products);
     }
 
     public async Task<IActionResult> Details(int? id)
     {
         var product = await _unitOfWork.Product
-            .GetByIdAsync(id.Value, include: q=>q.Include(c => c.Category));
+            .GetByIdAsync(id!.Value
+                , include: q => q.Include(c => c.Category)!
+                    .Include(r => r.Reviews)!);
+        
         if (product == null)
         {
             return NotFound();
+        }
+
+        var reviews = product.Reviews;
+        if (reviews == null)
+        {
+            product.Reviews = new List<Review>();
         }
         return View(product);
     }
@@ -42,7 +51,7 @@ public class HomeController : Controller
     [Authorize]
     public async Task<IActionResult> AddToCart(int productId)
     {
-        var claimsIdentity = (ClaimsIdentity)User.Identity;
+        var claimsIdentity = (ClaimsIdentity)User.Identity!;
         var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (userId == null)
@@ -52,7 +61,7 @@ public class HomeController : Controller
         
         var shoppingCart = await _unitOfWork.ShoppingCart
             .GetFirstOrDefaultAsync(c => c.UserId == userId 
-                ,include: q=>q.Include(c => c.Items));
+                ,include: q=>q.Include(c => c.Items)!);
         
         if (shoppingCart == null)
         {
@@ -62,10 +71,9 @@ public class HomeController : Controller
                 Items = new List<CartItem>()
             };
             await _unitOfWork.ShoppingCart.Add(shoppingCart);
-            await _unitOfWork.SaveChanges();
         }
         
-        var cartItem = shoppingCart.Items.FirstOrDefault(c => c.ProductId == productId);
+        var cartItem = shoppingCart.Items!.FirstOrDefault(c => c.ProductId == productId);
         if (cartItem != null)
         {
             cartItem.Quantity++;
@@ -77,7 +85,7 @@ public class HomeController : Controller
                 ProductId = productId,
                 Quantity = 1
             };
-            shoppingCart.Items.Add(cartItem);
+            shoppingCart.Items?.Add(cartItem);
         }
         await _unitOfWork.SaveChanges();
         TempData["Success"] = "Product added to cart";
@@ -92,7 +100,7 @@ public class HomeController : Controller
 
         var products = await _unitOfWork.Product
             .GetAllAsync(filter: p => p.Name.Contains(query)
-            , include: q=>q.Include(c => c.Category));
+            , include: q=>q.Include(c => c.Category)!);
         return View("SearchResults", products);
     }
 

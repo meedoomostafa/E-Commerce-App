@@ -7,5 +7,6 @@ public interface IUnitOfWork
     IShoppingCartRepository ShoppingCart { get; }
     IWishlistRepository Wishlist { get; }
     ICartItemRepository CartItem { get; }
+    IReviewRepository Review { get; }
     Task SaveChanges();
 }
