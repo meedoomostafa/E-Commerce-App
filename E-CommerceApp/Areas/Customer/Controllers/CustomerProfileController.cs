@@ -48,14 +48,48 @@ public class CustomerProfileController : Controller
         
         return View(profileDataViewModel);
     }
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // public async Task<IActionResult> UpdateProfile(ProfileViewModel model)
-    // {
-    //     var user = await _userManager.GetUserAsync(User);
-    //     if (user == null)
-    //     {
-    //         return NotFound($"user not found");
-    //     }
-    // }
+
+    [HttpGet]
+    public async Task<IActionResult> EditProfile()
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var model = new EditProfileViewModel
+        {
+            FirstName = user?.FirstName,
+            LastName = user?.LastName,
+            PhoneNumber = user?.PhoneNumber,
+            PostalCode = user?.PostalCode,
+            City = user?.City,
+            State = user?.State,
+            StreetAddress = user?.StreetAddress
+        };
+        return View(model ?? new EditProfileViewModel());
+    }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> EditProfile(EditProfileViewModel model)
+    {
+        if (!ModelState.IsValid)
+        {
+            return View(model);
+        }
+        var user = await _userManager.GetUserAsync(User);
+        if (user == null)
+        {
+            return NotFound($"user not found");
+        }
+        user.FirstName = model.FirstName;
+        user.LastName = model.LastName;
+        user.PhoneNumber = model.PhoneNumber;
+        user.PostalCode = model.PostalCode;
+        user.City = model.City;
+        user.State = model.State;
+        user.StreetAddress = model.StreetAddress;
+        
+        await _userManager.UpdateAsync(user);
+        await _unitOfWork.SaveChanges();
+        TempData["Success"] = "Profile updated successfully";
+        
+        return RedirectToAction(nameof(Index));
+    }
 }

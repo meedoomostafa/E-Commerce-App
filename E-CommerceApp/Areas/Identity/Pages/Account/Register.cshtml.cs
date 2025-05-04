@@ -20,7 +20,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<AppUser> _signInManager;
         private readonly UserManager<AppUser> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager; // Role management
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
         private readonly IUnitOfWork _unitOfWork;
@@ -63,7 +63,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
             [Required]
             [Phone]
             [Display(Name = "Phone Number")]
-            public string PhoneNumber { get; set; } // Renamed to match AppUser
+            public string PhoneNumber { get; set; }
 
             [Required]
             [Display(Name = "First Name")]
@@ -72,20 +72,43 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
             [Required]
             [Display(Name = "Last Name")]
             public string LastName { get; set; }
-
+            
+            [Required]
+            [Display(Name = "Address")]
+            public string Address { get; set; }
+            
+            [Required]
+            [Display(Name = "City")]
+            public string City { get; set; }
+            
+            [Required]
+            [Display(Name = "State")]
+            public string State { get; set; }
+            
+            [Required]
+            [Display(Name = "Zip Code")]
+            public string ZipCode { get; set; }
+            
+            [Required]
+            [Display(Name = "Country")]
+            public string Country { get; set; }
+            
+            [Display(Name = "Role")]
             public string? Role { get; set; }
 
+            [ValidateNever]
             public IEnumerable<SelectListItem>? RoleList { get; set; }
         }
 
-        [BindProperty] public InputModel Input { get; set; }
+        [BindProperty] 
+        public InputModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-
         public async Task OnGetAsync(string returnUrl = null)
         {
+            // Create roles if they don't exist
             if (!await _roleManager.RoleExistsAsync(SD.RoleCustomer))
             {
                 await _roleManager.CreateAsync(new IdentityRole(SD.RoleCustomer));
@@ -113,6 +136,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
+            
             if (ModelState.IsValid)
             {
                 var user = new AppUser
@@ -120,9 +144,16 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                     UserName = Input.Email,
                     Email = Input.Email,
                     FirstName = Input.FirstName,
-                    LastName = Input.LastName
+                    LastName = Input.LastName,
+                    PhoneNumber = Input.PhoneNumber,
+                    StreetAddress = Input.Address,
+                    City = Input.City,
+                    State = Input.State,
+                    PostalCode = Input.ZipCode,
                 };
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
+                
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -130,6 +161,10 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                     if (!String.IsNullOrEmpty(Input.Role))
                     {
                         await _userManager.AddToRoleAsync(user, Input.Role);
+                    }
+                    else
+                    {
+                        await _userManager.AddToRoleAsync(user, SD.RoleCustomer);
                     }
                     
                     // Create ShoppingCart and Wishlist for the new user
@@ -149,7 +184,6 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                     await _unitOfWork.ShoppingCart.Add(shoppingCart);
                     await _unitOfWork.Wishlist.Add(wishlist);
                     await _unitOfWork.SaveChanges();
-
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -181,8 +215,8 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                 }
             }
 
+            // If we got this far, something failed, redisplay form
             return Page();
-
         }
     }
 }
