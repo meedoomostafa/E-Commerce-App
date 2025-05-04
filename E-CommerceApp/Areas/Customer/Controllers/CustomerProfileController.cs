@@ -2,13 +2,14 @@ using App.Models;
 using App.Models.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using E_CommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Areas.Customer.Controllers;
-[Area("Customer")]
+[Area(SD.RoleCustomer)]
 [Authorize]
 public class CustomerProfileController : Controller
 {
@@ -47,4 +48,14 @@ public class CustomerProfileController : Controller
         
         return View(profileDataViewModel);
     }
+    // [HttpPost]
+    // [ValidateAntiForgeryToken]
+    // public async Task<IActionResult> UpdateProfile(ProfileViewModel model)
+    // {
+    //     var user = await _userManager.GetUserAsync(User);
+    //     if (user == null)
+    //     {
+    //         return NotFound($"user not found");
+    //     }
+    // }
 }

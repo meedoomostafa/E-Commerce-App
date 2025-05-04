@@ -2,13 +2,14 @@ using System.Security.Claims;
 using App.Models.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using E_CommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Areas.Customer.Controllers;
 
-[Area("Customer")]
+[Area(SD.RoleCustomer)]
 [Authorize]
 public class FavoritesController : Controller
 {
@@ -87,6 +88,29 @@ public class FavoritesController : Controller
         }
         await _unitOfWork.SaveChanges();
         TempData["SuccessFavorite"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
+        return Redirect(returnUrl ?? Url.Action("Index","Home")!);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ClearWishlist(string? returnUrl)
+    {
+        var user = (ClaimsIdentity)User.Identity!;
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier )?.Value;
+        
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("user not found");
+        }
+        
+        var wishlist = await _unitOfWork.Wishlist
+            .GetFirstOrDefaultAsync(c => c.UserId == userId);
+        
+        _unitOfWork.Wishlist.Delete(wishlist);
+        await _unitOfWork.SaveChanges();
+        
+        TempData["SuccessWishlist"] = "Wishlist cleared";
+        
         return Redirect(returnUrl ?? Url.Action("Index","Home")!);
     }
 }

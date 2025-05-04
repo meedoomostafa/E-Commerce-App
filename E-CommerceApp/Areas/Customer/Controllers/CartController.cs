@@ -3,13 +3,15 @@ using App.Models;
 using App.Models.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using E_CommerceApp.Filters;
+using E_CommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Areas.Customer.Controllers;
-[Area("Customer")]
+[Area(SD.RoleCustomer)]
 [Authorize]
 public class CartController : Controller
 {
@@ -42,7 +44,7 @@ public class CartController : Controller
         return View(shoppingCart.Items);
     }
 
-    [HttpPost("RemoveFromCart")]
+    [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveFromCart(RemoveFromCartViewModel model)
     {
@@ -125,5 +127,27 @@ public class CartController : Controller
         TempData["SuccessCart"] = "Product quantity incremented";
         
         return Redirect(url ?? Url.Action("Index","Cart")!);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> ClearCart(string? returnUrl)
+    {
+        var user = (ClaimsIdentity)User.Identity!;
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (string.IsNullOrEmpty(userId))
+        {
+            return Unauthorized("user not found");
+        }
+        
+        var shoppingCart = await _unitOfWork.ShoppingCart
+            .GetFirstOrDefaultAsync(c => c.UserId == userId);
+        
+        _unitOfWork.ShoppingCart.Delete(shoppingCart);
+        await _unitOfWork.SaveChanges();
+        
+        TempData["SuccessCart"] = "Cart cleared";
+        
+        return Redirect(returnUrl ?? Url.Action("Index","Home")!);
     }
 }

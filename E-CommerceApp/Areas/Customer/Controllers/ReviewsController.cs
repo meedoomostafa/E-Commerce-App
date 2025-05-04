@@ -2,13 +2,15 @@ using System.Security.Claims;
 using App.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using E_CommerceApp.Filters;
+using E_CommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Areas.Customer.Controllers;
 
-[Area("Customer")]
+[Area(SD.RoleCustomer)]
 [Authorize]
 public class ReviewsController : Controller
 {
@@ -20,6 +22,7 @@ public class ReviewsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [TypeFilter(typeof(CustomAuthorizeFilter))]
     public async Task<IActionResult> AddReview(AddReviewsViewModel model)
     {
         var productId = model.ProductId;
