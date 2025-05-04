@@ -30,6 +30,7 @@
                             <label class="form-check-label" asp-for="Input.RememberMe"></label>
                         </div>
                         <div class="text-end">
+                            <input type="hidden" asp-for="ReturnUrl" />
                             <button id="login-submit" type="submit" class="btn btn-primary me-2">Log in</button>
                             <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-secondary">Register</a>
                         </div>

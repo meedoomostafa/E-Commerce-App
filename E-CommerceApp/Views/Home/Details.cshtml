@@ -6,7 +6,6 @@
 }
 
 <div class="container mt-5">
-
     <h2 class="text-center mb-5">Product Details</h2>
 
     @if (Model == null)
@@ -25,18 +24,29 @@
             </div>
         }
 
-        <!-- Product Image -->
+        <!-- Product Card with Top-Right Icon -->
         <div class="row justify-content-center">
             <div class="col-md-8">
-                <div class="text-center mb-4">
-                    <img src="@(!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/images/placeholder.jpg")"
-                         alt="@Model.Name"
-                         class="img-fluid rounded-4 shadow-sm"
-                         style="max-height: 400px; object-fit: cover;" />
-                </div>
+                <div class="card shadow-sm rounded-4 mb-4 position-relative">
+                    <!-- Favorite Button - Top Right -->
+                    <div class="position-absolute" style="top: 15px; right: 15px; z-index: 10;">
+                        <form id="favoriteForm" asp-area="Customer" asp-controller="Favorites" asp-action="ToggleFavorite" method="post">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
+                            <button id="favoriteButton" type="submit" class="btn btn-link text-decoration-none p-0">
+                                <i id="heartIcon" class="fas fa-heart fs-2"></i>
+                            </button>
+                        </form>
+                    </div>
 
-                <!-- Product Details Card -->
-                <div class="card shadow-sm rounded-4 mb-4">
+                    <!-- Product Image -->
+                    <div class="text-center mb-3 p-3">
+                        <img src="@(!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/images/placeholder.jpg")"
+                             alt="@Model.Name"
+                             class="img-fluid rounded-4 shadow-sm"
+                             style="max-height: 400px; object-fit: cover;" />
+                    </div>
+
                     <div class="card-body">
                         <h3 class="card-title mb-4">@Model.Name</h3>
                         <p><strong>Description:</strong> @Model.Description</p>
@@ -44,12 +54,13 @@
                         <p><strong>Stock:</strong> @Model.Stock</p>
                         <p><strong>Category:</strong> @(Model.Category?.Name ?? "No Category")</p>
 
-                        <!-- Actions Section -->
-                        <div class="d-flex flex-column align-items-center gap-3 mt-4">
+                        <!-- Add to Cart Button -->
+                        <div class="d-flex justify-content-center mt-4">
                             @if (Model.Stock > 0)
                             {
                                 <form asp-action="AddToCart" method="post" class="w-100 text-center">
-                                    <input type="hidden" id="productId" name="productId" value="@Model.Id" />
+                                    <input type="hidden" name="productId" value="@Model.Id" />
+                                    <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Home", new { id = Model.Id })" />
                                     <button type="submit" class="btn btn-primary px-4">
                                         <i class="fas fa-cart-plus me-2"></i> Add to Cart
                                     </button>
@@ -61,17 +72,6 @@
                                     Out of Stock
                                 </div>
                             }
-
-                            <!-- Favorite Button -->
-                            <form id="favoriteForm" asp-area="Customer" asp-controller="Favorites" asp-action="ToggleFavorite" method="post" class="text-center">
-                                <input type="hidden" name="productId" value="@Model.Id" />
-                                <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-
-                                <button id="favoriteButton" type="submit" class="btn btn-link text-decoration-none p-0">
-                                    <i id="heartIcon" class="fas fa-heart text-muted fs-2"></i>
-                                    <span id="favoriteText" class="ms-2">Add to Favorites</span>
-                                </button>
-                            </form>
                         </div>
                     </div>
                 </div>
@@ -92,18 +92,25 @@
                             <div class="list-group">
                                 @foreach (var review in Model.Reviews)
                                 {
-                                    <div class="list-group-item">
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <h6>@review.User?.FirstName @review.User?.LastName</h6>
-                                            <div class="text-warning small">
+                                    <div class="list-group-item p-3 mb-2 border rounded">
+                                        <!-- Reviewer's Profile with Stars to Right -->
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-user-circle fs-4 me-2 text-secondary"></i>
+                                                <span class="fw-bold">@(review.User?.FirstName ?? "Anonymous")</span>
+                                            </div>
+                                            <!-- Rating Stars -->
+                                            <div class="text-warning">
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
                                                     <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted")"></i>
                                                 }
                                             </div>
                                         </div>
-                                        <p>@review.Comment</p>
-                                        <small class="text-muted">Reviewed on @review.CreatedAt.ToShortDateString()</small>
+                                        
+                                        <!-- Review Comment Below User Info -->
+                                        <p class="mb-1 ms-4 ps-2">@review.Comment</p>
+                                        <small class="text-muted ms-4 ps-2">Reviewed on @review.CreatedAt.ToShortDateString()</small>
                                     </div>
                                 }
                             </div>
@@ -130,16 +137,14 @@
                                 <label for="comment" class="form-label">Comment (Optional)</label>
                                 <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
                             </div>
-                            
-                            <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                            
+
                             <button type="submit" class="btn btn-primary">Submit Review</button>
                         </form>
                     </div>
                 </div>
 
                 <!-- Back Button -->
-                <div class="text-center mt-3">
+                <div class="text-center mt-3 mb-5">
                     <a asp-action="Index" class="btn btn-secondary px-5 py-2 rounded-3">Back to Products</a>
                 </div>
             </div>
@@ -152,20 +157,20 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const stars = document.querySelectorAll('.rating-star');
-            const ratingValue = document.getElementById('rating'); // Ensure this matches the ID of the hidden input
-
+            const ratingValue = document.getElementById('rating');
+            
             stars.forEach(star => {
                 star.addEventListener('click', function () {
                     const selectedRating = this.getAttribute('data-rating');
-                    ratingValue.value = selectedRating; // Update the hidden input's value
-
+                    ratingValue.value = selectedRating;
+                    
                     // Update star colors
                     stars.forEach((s, index) => {
                         s.classList.toggle('text-warning', index < selectedRating);
                         s.classList.toggle('text-muted', index >= selectedRating);
                     });
                 });
-
+                
                 star.addEventListener('mouseover', function () {
                     const hoveredRating = this.getAttribute('data-rating');
                     stars.forEach((s, index) => {
@@ -173,7 +178,7 @@
                         s.classList.toggle('text-muted', index >= hoveredRating);
                     });
                 });
-
+                
                 star.addEventListener('mouseout', function () {
                     const currentRating = ratingValue.value;
                     stars.forEach((s, index) => {
@@ -183,35 +188,31 @@
                 });
             });
         });
-
+        
         // Toggle Favorite AJAX
         $(document).ready(function () {
             var productId = $('input[name="productId"]').val();
-
+            
             // Check favorite state in localStorage
             if (localStorage.getItem('favorite_' + productId) === 'true') {
                 $('#heartIcon').removeClass('text-muted').addClass('text-danger');
-                $('#favoriteText').text('Remove from Favorites');
             } else {
                 $('#heartIcon').removeClass('text-danger').addClass('text-muted');
-                $('#favoriteText').text('Add to Favorites');
             }
-
+            
             $('#favoriteForm').on('submit', function (e) {
                 e.preventDefault();
-
                 var form = $(this);
                 var formData = form.serialize();
                 var heartIcon = $('#heartIcon');
-                var favoriteText = $('#favoriteText');
-
+                
                 // Toggle favorite state in localStorage
-                var isFavorited = localStorage.getItem('favorite_' + productId) === 'false';
+                var isFavorited = localStorage.getItem('favorite_' + productId) === 'true' ? 'false' : 'true';
                 localStorage.setItem('favorite_' + productId, isFavorited);
-
+                
+                // Toggle heart icon appearance
                 heartIcon.toggleClass('text-muted text-danger');
-                favoriteText.text(isFavorited ? 'Remove from Favorites' : 'Add to Favorites');
-
+                
                 // Submit the form via AJAX
                 $.ajax({
                     url: '/Customer/Favorites/ToggleFavorite',
@@ -225,7 +226,7 @@
                         alert('An error occurred while updating your favorites.');
                     }
                 });
-
+                
                 // Add animation effect
                 heartIcon.addClass('animate__animated animate__heartBeat');
                 setTimeout(function () {

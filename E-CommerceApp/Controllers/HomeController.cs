@@ -3,6 +3,7 @@ using System.Security.Claims;
 using App.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using E_CommerceApp.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore;
@@ -48,8 +49,8 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [Authorize]
-    public async Task<IActionResult> AddToCart(int productId)
+    [TypeFilter(typeof(CustomAuthorizeFilter))]
+    public async Task<IActionResult> AddToCart(int productId , string? returnUrl)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity!;
         var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -73,7 +74,8 @@ public class HomeController : Controller
             await _unitOfWork.ShoppingCart.Add(shoppingCart);
         }
         
-        var cartItem = shoppingCart.Items!.FirstOrDefault(c => c.ProductId == productId);
+        var cartItem = shoppingCart.Items!
+            .FirstOrDefault(c => c.ProductId == productId);
         if (cartItem != null)
         {
             cartItem.Quantity++;
@@ -89,8 +91,10 @@ public class HomeController : Controller
         }
         await _unitOfWork.SaveChanges();
         TempData["Success"] = "Product added to cart";
-        return RedirectToAction(nameof(Index));
+        return LocalRedirect(returnUrl ?? Url.Action("Index","Home")!);;
     }
+    [HttpPost]
+    [ValidateAntiForgeryToken]
     public async Task<IActionResult> Search(string query)
     {
         if (string.IsNullOrWhiteSpace(query))
