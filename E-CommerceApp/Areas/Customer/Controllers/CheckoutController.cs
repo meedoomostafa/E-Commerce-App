@@ -1,4 +1,4 @@
-using E_CommerceApp.Services;
+using App.Utiltity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +9,6 @@ public class CheckoutController : Controller
 {
     public async Task<IActionResult> Index()
     {
-        
         return View();
     }
 }

@@ -1,6 +1,6 @@
 using App.Models;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
-using E_CommerceApp.Services;
+using App.Utiltity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

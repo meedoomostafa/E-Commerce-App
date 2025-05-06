@@ -5,157 +5,170 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<div class="container mt-5">
-    <h2 class="text-center mb-5">Product Details</h2>
+<div class="container py-4">
+    <h2 class="text-center fw-bold text-primary mb-4">Product Details</h2>
 
     @if (Model == null)
     {
-        <div class="alert alert-danger text-center">
-            Product not found!
+        <div class="alert alert-custom alert-danger">
+            <i class="fas fa-exclamation-circle me-2"></i> Product not found!
         </div>
     }
     else
     {
-        @if (TempData["SuccessFavorite"] != null)
-        {
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                @TempData["SuccessFavorite"]
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        }
-
-        <!-- Product Card with Top-Right Icon -->
         <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card shadow-sm rounded-4 mb-4 position-relative">
-                    <!-- Favorite Button - Top Right -->
-                    <div class="position-absolute" style="top: 15px; right: 15px; z-index: 10;">
+            <div class="col-lg-8">
+                <!-- Product Card -->
+                <div class="card card-custom mb-4 position-relative">
+                    <!-- Favorite Button -->
+                    <div class="position-absolute top-0 end-0 p-3" style="z-index: 10;">
                         <form id="favoriteForm" asp-area="Customer" asp-controller="Favorites" asp-action="ToggleFavorite" method="post">
                             <input type="hidden" name="productId" value="@Model.Id" />
                             <input type="hidden" name="returnUrl" value="@Context.Request.Path" />
-                            <button id="favoriteButton" type="submit" class="btn btn-link text-decoration-none p-0">
-                                <i id="heartIcon" class="fas fa-heart fs-2"></i>
+                            <button id="favoriteButton" type="submit" class="btn btn-link p-0 border-0 bg-transparent">
+                                <i id="heartIcon" class="fas fa-heart fs-4 text-muted"></i>
                             </button>
                         </form>
                     </div>
 
                     <!-- Product Image -->
-                    <div class="text-center mb-3 p-3">
+                    <div class="text-center p-3">
                         <img src="@(!string.IsNullOrEmpty(Model.ImageUrl) ? Model.ImageUrl : "/images/placeholder.jpg")"
                              alt="@Model.Name"
-                             class="img-fluid rounded-4 shadow-sm"
-                             style="max-height: 400px; object-fit: cover;" />
-                    </div>
+                             class="img-fluid rounded shadow-sm" style="max-height: 400px;" />
 
-                    <div class="card-body">
-                        <h3 class="card-title mb-4">@Model.Name</h3>
-                        <p><strong>Description:</strong> @Model.Description</p>
-                        <p><strong>Price:</strong> @Model.Price.ToString("C")</p>
-                        <p><strong>Stock:</strong> @Model.Stock</p>
-                        <p><strong>Category:</strong> @(Model.Category?.Name ?? "No Category")</p>
-
-                        <!-- Add to Cart Button -->
-                        <div class="d-flex justify-content-center mt-4">
-                            @if (Model.Stock > 0)
-                            {
-                                <form asp-action="AddToCart" method="post" class="w-100 text-center">
-                                    <input type="hidden" name="productId" value="@Model.Id" />
-                                    <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Home", new { id = Model.Id })" />
-                                    <button type="submit" class="btn btn-primary px-4">
-                                        <i class="fas fa-cart-plus me-2"></i> Add to Cart
-                                    </button>
-                                </form>
-                            }
-                            else
-                            {
-                                <div class="alert alert-warning text-center w-100">
-                                    Out of Stock
+                        <div class="card-body">
+                            <h3 class="card-title text-primary mb-3">@Model.Name</h3>
+                        
+                            <div class="mb-4">
+                                <div class="row mb-2">
+                                    <div class="col-md-3 fw-bold">Description:</div>
+                                    <div class="col-md-9">@Model.Description</div>
                                 </div>
-                            }
+                                <div class="row mb-2">
+                                    <div class="col-md-3 fw-bold">Price:</div>
+                                    <div class="col-md-9 text-success fw-bold">@Model.Price.ToString("C")</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-3 fw-bold">Stock:</div>
+                                    <div class="col-md-9">@Model.Stock</div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-md-3 fw-bold">Category:</div>
+                                    <div class="col-md-9">@(Model.Category?.Name ?? "No Category")</div>
+                                </div>
+                            </div>
+
+                            <!-- Add to Cart Button -->
+                            <div class="text-center mt-4">
+                                @if (Model.Stock > 0)
+                                {
+                                    <form asp-controller="Home" asp-action="AddToCart" method="post">
+                                        <input type="hidden" name="productId" value="@Model.Id" />
+                                        <input type="hidden" name="returnUrl" value="@Url.Action("Details", "Home", new { id = Model.Id })" />
+                                        <button type="submit" class="btn btn-primary btn-lg px-5 py-2">
+                                            <i class="fas fa-cart-plus me-2"></i> Add to Cart
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <div class="alert alert-custom alert-warning mb-0">
+                                        <i class="fas fa-exclamation-triangle me-2"></i> Out of Stock
+                                    </div>
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- User Reviews Section -->
-                <div class="card shadow-sm rounded-4 mb-4">
-                    <div class="card-body">
-                        <h5 class="fw-bold mb-3">User Reviews</h5>
+                <div class="card card-custom mb-4">
+                    <div class="card-header bg-transparent">
+                        <h4 class="fw-bold mb-0">
+                            <i class="fas fa-star text-warning me-2"></i>User Reviews
+                        </h4>
+                    </div>
 
+                    <div class="card-body">
                         @if (Model.Reviews == null || !Model.Reviews.Any())
                         {
-                            <div class="alert alert-info mb-0">
-                                No reviews yet. Be the first to review this product!
+                            <div class="alert alert-custom alert-info">
+                                <i class="fas fa-info-circle me-2"></i> No reviews yet. Be the first to review this product!
                             </div>
                         }
                         else
                         {
-                            <div class="list-group">
+                            <div class="review-list">
                                 @foreach (var review in Model.Reviews)
                                 {
-                                    <div class="list-group-item p-3 mb-2 border rounded">
-                                        <!-- Reviewer's Profile with Stars to Right -->
+                                    <div class="review-item border-bottom pb-3 mb-3">
                                         <div class="d-flex justify-content-between align-items-center mb-2">
                                             <div class="d-flex align-items-center">
-                                                <i class="fas fa-user-circle fs-4 me-2 text-secondary"></i>
+                                                <i class="fas fa-user-circle text-secondary me-2 fs-4"></i>
                                                 <span class="fw-bold">@(review.User?.FirstName ?? "Anonymous")</span>
                                             </div>
-                                            <!-- Rating Stars -->
-                                            <div class="text-warning">
+                                            <div class="rating">
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
                                                     <i class="fas fa-star @(i <= review.Rating ? "text-warning" : "text-muted")"></i>
                                                 }
                                             </div>
                                         </div>
-                                        
-                                        <!-- Review Comment Below User Info -->
-                                        <p class="mb-1 ms-4 ps-2">@review.Comment</p>
-                                        <small class="text-muted ms-4 ps-2">Reviewed on @review.CreatedAt.ToShortDateString()</small>
+                                        <div class="review-content ms-4">
+                                            <p class="mb-1">@review.Comment</p>
+                                            <small class="text-muted">Reviewed on @review.CreatedAt.ToShortDateString()</small>
+                                        </div>
                                     </div>
                                 }
                             </div>
                         }
 
                         <!-- Add Review Form -->
-                        <hr />
-                        <h6 class="fw-bold mb-3">Leave a Review</h6>
-                        <form asp-area="Customer" asp-controller="Reviews" asp-action="AddReview" method="post">
-                            <input type="hidden" name="productId" value="@Model.Id" />
+                        <div class="mt-4 pt-3 border-top">
+                            <h5 class="fw-bold mb-3">
+                                <i class="fas fa-pen text-primary me-2"></i>Leave a Review
+                            </h5>
+                            <form asp-area="Customer" asp-controller="Reviews" asp-action="AddReview" method="post">
+                                <input type="hidden" name="productId" value="@Model.Id" />
 
-                            <div class="mb-3">
-                                <label class="form-label">Rating</label>
-                                <div id="rating-stars" class="d-flex gap-2">
-                                    @for (int i = 1; i <= 5; i++)
-                                    {
-                                        <i class="fas fa-star rating-star text-muted" data-rating="@i"></i>
-                                    }
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Rating</label>
+                                    <div id="rating-stars" class="d-flex gap-2">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            <i class="fas fa-star rating-star text-muted fs-4" data-rating="@i"></i>
+                                        }
+                                    </div>
+                                    <input type="hidden" id="rating" name="rating" value="0" required />
                                 </div>
-                                <input type="hidden" id="rating" name="rating" value="0" required />
-                            </div>
 
-                            <div class="mb-3">
-                                <label for="comment" class="form-label">Comment (Optional)</label>
-                                <textarea id="comment" name="comment" class="form-control" rows="3"></textarea>
-                            </div>
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label fw-bold">Comment (Optional)</label>
+                                    <textarea id="comment" name="comment" class="form-control form-control-custom" rows="3"></textarea>
+                                </div>
 
-                            <button type="submit" class="btn btn-primary">Submit Review</button>
-                        </form>
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Back Button -->
-                <div class="text-center mt-3 mb-5">
-                    <a asp-action="Index" class="btn btn-secondary px-5 py-2 rounded-3">Back to Products</a>
+                <div class="text-center mb-4">
+                    <a asp-action="Index" class="btn btn-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>Back to Products
+                    </a>
                 </div>
             </div>
         </div>
     }
 </div>
-
+        
 @section Scripts {
-    <!-- Star Rating Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Star Rating Script
             const stars = document.querySelectorAll('.rating-star');
             const ratingValue = document.getElementById('rating');
             
@@ -166,31 +179,44 @@
                     
                     // Update star colors
                     stars.forEach((s, index) => {
-                        s.classList.toggle('text-warning', index < selectedRating);
-                        s.classList.toggle('text-muted', index >= selectedRating);
+                        if (index < selectedRating) {
+                            s.classList.remove('text-muted');
+                            s.classList.add('text-warning');
+                        } else {
+                            s.classList.remove('text-warning');
+                            s.classList.add('text-muted');
+                        }
                     });
                 });
                 
                 star.addEventListener('mouseover', function () {
                     const hoveredRating = this.getAttribute('data-rating');
                     stars.forEach((s, index) => {
-                        s.classList.toggle('text-warning', index < hoveredRating);
-                        s.classList.toggle('text-muted', index >= hoveredRating);
+                        if (index < hoveredRating) {
+                            s.classList.remove('text-muted');
+                            s.classList.add('text-warning');
+                        } else {
+                            s.classList.remove('text-warning');
+                            s.classList.add('text-muted');
+                        }
                     });
                 });
                 
                 star.addEventListener('mouseout', function () {
                     const currentRating = ratingValue.value;
                     stars.forEach((s, index) => {
-                        s.classList.toggle('text-warning', index < currentRating);
-                        s.classList.toggle('text-muted', index >= currentRating);
+                        if (index < currentRating) {
+                            s.classList.remove('text-muted');
+                            s.classList.add('text-warning');
+                        } else {
+                            s.classList.remove('text-warning');
+                            s.classList.add('text-muted');
+                        }
                     });
                 });
             });
-        });
-        
-        // Toggle Favorite AJAX
-        $(document).ready(function () {
+            
+            // Toggle Favorite AJAX
             var productId = $('input[name="productId"]').val();
             
             // Check favorite state in localStorage
@@ -223,7 +249,26 @@
                     },
                     error: function (xhr, status, error) {
                         console.error('Error:', error);
-                        alert('An error occurred while updating your favorites.');
+                        
+                        // Show error notification
+                        const errorAlert = $(`
+                            <div class="alert alert-custom alert-danger alert-dismissible fade show">
+                                <div class="alert-content">
+                                    <i class="fas fa-exclamation-circle me-2"></i>
+                                    <span>An error occurred while updating your favorites.</span>
+                                </div>
+                                <button type="button" class="btn-close-custom" data-bs-dismiss="alert" aria-label="Close">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        `);
+                        
+                        $('.container').prepend(errorAlert);
+                        
+                        // Remove alert after 5 seconds
+                        setTimeout(() => {
+                            errorAlert.remove();
+                        }, 5000);
                     }
                 });
                 

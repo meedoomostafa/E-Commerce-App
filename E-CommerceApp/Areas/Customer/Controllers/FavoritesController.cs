@@ -2,7 +2,8 @@ using System.Security.Claims;
 using App.Models.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
-using E_CommerceApp.Services;
+using App.Utiltity;
+using E_CommerceApp.Filters;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -87,7 +88,7 @@ public class FavoritesController : Controller
             wishList.Items!.Remove(wishListItem);
         }
         await _unitOfWork.SaveChanges();
-        TempData["SuccessFavorite"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
+        TempData["Success"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
         return Redirect(returnUrl ?? Url.Action("Index","Home")!);
     }
 
@@ -109,7 +110,7 @@ public class FavoritesController : Controller
         _unitOfWork.Wishlist.Delete(wishlist);
         await _unitOfWork.SaveChanges();
         
-        TempData["SuccessWishlist"] = "Wishlist cleared";
+        TempData["Success"] = "Wishlist cleared";
         
         return Redirect(returnUrl ?? Url.Action("Index","Home")!);
     }

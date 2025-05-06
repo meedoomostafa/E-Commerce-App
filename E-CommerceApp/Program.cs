@@ -3,10 +3,13 @@ using App.Repositories;
 using App.Repositories.AppRepository;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
 using App.Repositories.Database;
-using E_CommerceApp.Services;
+using App.Utiltity;
+using App.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using FluentValidation;
+using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +38,8 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
+builder.Services.AddFluentValidationAutoValidation();
+builder.Services.AddValidatorsFromAssemblyContaining<RegisterViewModelValidator>();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 

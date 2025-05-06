@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace E_CommerceApp.Filters;
 
-public class CustomAuthorizeFilter : IAuthorizationFilter
+public class CustomAuthorizeFilter : Attribute , IAuthorizationFilter 
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {

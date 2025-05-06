@@ -3,8 +3,8 @@ using App.Models;
 using App.Models.Models;
 using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
+using App.Utiltity;
 using E_CommerceApp.Filters;
-using E_CommerceApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -69,7 +69,7 @@ public class CartController : Controller
         _unitOfWork.CartItem.Delete(cartItem);
         await _unitOfWork.SaveChanges();
         
-        TempData["SuccessCart"] = "Product removed from cart";
+        TempData["Success"] = "Product removed from cart";
         
         return Redirect(url ?? Url.Action("Index","Cart")!);
     }
@@ -100,7 +100,7 @@ public class CartController : Controller
         }
         await _unitOfWork.SaveChanges();
         
-        TempData["SuccessCart"] = "Product quantity decremented";
+        TempData["Success"] = "Product quantity decremented";
         
         return Redirect(url ?? Url.Action("Index","Cart")!);
     }
@@ -124,7 +124,7 @@ public class CartController : Controller
         await _unitOfWork.CartItem.Update(cartItem);  
         await _unitOfWork.SaveChanges();
         
-        TempData["SuccessCart"] = "Product quantity incremented";
+        TempData["Success"] = "Product quantity incremented";
         
         return Redirect(url ?? Url.Action("Index","Cart")!);
     }
@@ -146,7 +146,7 @@ public class CartController : Controller
         _unitOfWork.ShoppingCart.Delete(shoppingCart);
         await _unitOfWork.SaveChanges();
         
-        TempData["SuccessCart"] = "Cart cleared";
+        TempData["Success"] = "Cart cleared";
         
         return Redirect(returnUrl ?? Url.Action("Index","Home")!);
     }

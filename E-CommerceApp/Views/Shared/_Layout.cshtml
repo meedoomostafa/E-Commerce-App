@@ -1,6 +1,6 @@
 ﻿@using System.Security.Claims
 @using App.Repositories.AppRepository.RepositoriesInterfaces
-@using E_CommerceApp.Services
+@using App.Utiltity
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.EntityFrameworkCore
 @inject IUnitOfWork UnitOfWork
@@ -116,7 +116,30 @@
             </div>
         </nav>
     </header>
-
+    <div class="container mt-3">
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show animate__animated animate__fadeIn shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-check-circle fs-4 me-2"></i>
+                    <strong>Success!</strong>
+                    <span class="ms-2">@TempData["Success"]</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show animate__animated animate__fadeIn shadow-sm" role="alert">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-exclamation-circle fs-4 me-2"></i>
+                    <strong>Error!</strong>
+                    <span class="ms-2">@TempData["Error"]</span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+    </div>
     <!-- Main Content -->
     <div class="container-fluid main-content">
         <main role="main" class="pb-5">

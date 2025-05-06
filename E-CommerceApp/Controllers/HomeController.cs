@@ -49,7 +49,7 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [TypeFilter(typeof(CustomAuthorizeFilter))]
+    [CustomAuthorizeFilter]
     public async Task<IActionResult> AddToCart(int productId , string? returnUrl)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity!;

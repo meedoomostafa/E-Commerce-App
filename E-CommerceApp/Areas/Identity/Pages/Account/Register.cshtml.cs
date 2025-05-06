@@ -8,8 +8,9 @@ using System.Text;
 using System.Text.Encodings.Web;
 using App.Models;
 using App.Models.Models;
+using App.Models.ViewModels;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
-using E_CommerceApp.Services;
+using App.Utiltity;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -41,67 +42,8 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
             _unitOfWork = unitOfWork;
         }
 
-        public class InputModel
-        {
-            [Required]
-            [EmailAddress]
-            [Display(Name = "Email")]
-            public string Email { get; set; }
-
-            [Required]
-            [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.",
-                MinimumLength = 6)]
-            [DataType(DataType.Password)]
-            [Display(Name = "Password")]
-            public string Password { get; set; }
-
-            [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-            public string ConfirmPassword { get; set; }
-
-            [Required]
-            [Phone]
-            [Display(Name = "Phone Number")]
-            public string PhoneNumber { get; set; }
-
-            [Required]
-            [Display(Name = "First Name")]
-            public string FirstName { get; set; }
-
-            [Required]
-            [Display(Name = "Last Name")]
-            public string LastName { get; set; }
-            
-            [Required]
-            [Display(Name = "Address")]
-            public string Address { get; set; }
-            
-            [Required]
-            [Display(Name = "City")]
-            public string City { get; set; }
-            
-            [Required]
-            [Display(Name = "State")]
-            public string State { get; set; }
-            
-            [Required]
-            [Display(Name = "Zip Code")]
-            public string ZipCode { get; set; }
-            
-            [Required]
-            [Display(Name = "Country")]
-            public string Country { get; set; }
-            
-            [Display(Name = "Role")]
-            public string? Role { get; set; }
-
-            [ValidateNever]
-            public IEnumerable<SelectListItem>? RoleList { get; set; }
-        }
-
         [BindProperty] 
-        public InputModel Input { get; set; }
+        public RegisterViewModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
