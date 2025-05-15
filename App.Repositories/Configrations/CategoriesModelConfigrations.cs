@@ -1,5 +1,4 @@
 using App.Models;
-using App.Models.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

@@ -10,3 +10,8 @@ obj/
 *.vs
 *.sln.dotsettings
 .idea/
+appsettings.json
+appsettings.Development.json
+.csproj
+*.sln
+# Rider-specific ignores
