@@ -1,13 +1,10 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
-using SendGrid;
-using SendGrid.Helpers.Mail;
 
 // Add the SendGrid NuGet package by running:
 // dotnet add package SendGrid
 
-namespace E_CommerceApp.Services
+namespace App.Utiltity
 {
     public class IdentityEmailService : IEmailSender
     {

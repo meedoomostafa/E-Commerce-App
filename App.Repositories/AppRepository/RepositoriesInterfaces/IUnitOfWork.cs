@@ -8,5 +8,7 @@ public interface IUnitOfWork
     IWishlistRepository Wishlist { get; }
     ICartItemRepository CartItem { get; }
     IReviewRepository Review { get; }
+    IOrderRepository Order { get; }
+    IOrderItemRepository OrderItem { get; }
     Task SaveChanges();
 }

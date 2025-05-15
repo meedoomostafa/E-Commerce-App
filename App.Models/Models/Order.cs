@@ -2,7 +2,7 @@ using App.Models.Enums;
 
 namespace App.Models.Models;
 
-public class OrderHeader
+public class Order
 {
     public int Id { get; set; }
     public string AppUserId { get; set; }

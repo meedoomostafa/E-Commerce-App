@@ -1,6 +1,8 @@
+using App.Models.Models;
+
 namespace App.Repositories.AppRepository.RepositoriesInterfaces;
 
-public class IOrderRepository
+public interface IOrderRepository : IRepository<Order>
 {
-    
+    Task Update(Order entity);
 }

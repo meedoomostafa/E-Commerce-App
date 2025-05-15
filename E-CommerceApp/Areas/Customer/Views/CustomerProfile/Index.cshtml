@@ -70,8 +70,8 @@
                                         <div class="position-relative">
                                             <img src="@item.Product.ImageUrl" class="card-img-top" alt="@item.Product.Name" style="height: 180px; object-fit: cover;" />
                                             <form asp-area="Customer" asp-controller="Cart" asp-action="RemoveFromCart" method="post" class="position-absolute top-0 end-0 m-2">
-                                                <input type="hidden" name="productId" value="@item.ProductId" />
-                                                <input type="hidden" name="returnUrl" value="@Url.Action("Index", "CustomerProfile", new { area = "Customer" })" />
+                                                <input type="hidden" name="ItemId" value="@item.ProductId" />
+                                                <input type="hidden" name="ReturnUrl" value="@Url.Action("Index", "CustomerProfile", new { area = "Customer" })" />
                                                 @Html.AntiForgeryToken()
                                                 <button type="submit" class="btn btn-danger btn-sm rounded-circle remove-cart-item" data-toggle="tooltip" data-placement="top" title="Remove from Cart">
                                                     <i class="fas fa-trash"></i>

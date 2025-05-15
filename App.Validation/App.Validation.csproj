@@ -1,14 +1,18 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
-        <OutputType>Exe</OutputType>
         <TargetFramework>net9.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <RootNamespace>App.Validation</RootNamespace> <!-- Fixed typo: Validatio -> Validation -->
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Products\" />
+        <PackageReference Include="FluentValidation" Version="12.0.0" />
+        <PackageReference Include="FluentValidation.AspNetCore" Version="11.3.0" />
     </ItemGroup>
 
+    <ItemGroup>
+        <ProjectReference Include="..\App.Models\App.Models.csproj" />
+        <ProjectReference Include="..\App.Utiltity\App.Utiltity.csproj" />
+    </ItemGroup>
 </Project>

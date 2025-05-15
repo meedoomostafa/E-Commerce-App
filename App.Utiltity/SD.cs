@@ -1,4 +1,4 @@
-namespace E_CommerceApp.Services;
+namespace App.Utiltity;
 
 public static class SD
 {

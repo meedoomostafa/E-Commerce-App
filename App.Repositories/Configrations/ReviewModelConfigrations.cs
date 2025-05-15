@@ -21,5 +21,7 @@ public class ReviewModelConfigrations : IEntityTypeConfiguration<Review>
 
         builder.Property(c => c.Comment).HasMaxLength(200);
         builder.Property(c => c.Rating).HasColumnType("TINYINT");
+        
+        builder.Property(c => c.CreatedAt).HasDefaultValueSql("GETDATE()");
     }
 }

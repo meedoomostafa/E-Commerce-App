@@ -13,6 +13,8 @@ public class UnitOfWork : IUnitOfWork
     public ICartItemRepository CartItem { get; private set;}
     
     public IReviewRepository Review { get; private set;}
+    public IOrderRepository Order { get; private set;}
+    public IOrderItemRepository OrderItem { get; private set;}
     public UnitOfWork(AppDbContext context)
     {
         _context = context;
@@ -22,6 +24,8 @@ public class UnitOfWork : IUnitOfWork
         CartItem = new CartItemRepository(_context);       
         ShoppingCart = new ShoppingCartRepository(_context);
         Review = new ReviewRepository(_context);
+        Order = new OrderRepository(_context);
+        OrderItem = new OrderItemRepository(_context);
     }
     public async Task SaveChanges()
     {

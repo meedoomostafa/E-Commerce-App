@@ -44,10 +44,16 @@ public class CartController : Controller
         return View(shoppingCart.Items);
     }
 
+
+    
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveFromCart(RemoveFromCartViewModel model)
     {
+        if (!User.Identity.IsAuthenticated)
+        {
+            
+        }
         var user = (ClaimsIdentity)User.Identity!;
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
@@ -59,7 +65,7 @@ public class CartController : Controller
         var url = model.ReturnUrl;
 
         CartItem cartItem = await _unitOfWork.CartItem
-            .GetFirstOrDefaultAsync(a => a.Id == itemId && a.ShoppingCart.UserId == userId);
+            .GetFirstOrDefaultAsync((a => a.ProductId == itemId || a.Id == itemId && a.ShoppingCart.UserId == userId));
 
         if (cartItem == null)
         {

@@ -119,7 +119,7 @@ public class ProductController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id , Product product , IFormFile imageFile)
+    public async Task<IActionResult> Edit(int id , Product product , IFormFile? imageFile)
     {
         if (id != product.Id)
         {

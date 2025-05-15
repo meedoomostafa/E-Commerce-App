@@ -8,7 +8,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Repositories", "App.Rep
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Utiltity", "App.Utiltity\App.Utiltity.csproj", "{84A93D8B-F186-44A6-A9EE-6F8371BB2AED}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Validation", "App.Validation\App.Validation.csproj", "{99A73DA5-764C-4386-B6F6-B351B4084421}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "App.Validation", "App.Validation\App.Validation.csproj", "{28469560-753C-4479-BCBE-F5DA599780A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -32,9 +32,9 @@ Global
 		{84A93D8B-F186-44A6-A9EE-6F8371BB2AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84A93D8B-F186-44A6-A9EE-6F8371BB2AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84A93D8B-F186-44A6-A9EE-6F8371BB2AED}.Release|Any CPU.Build.0 = Release|Any CPU
-		{99A73DA5-764C-4386-B6F6-B351B4084421}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{99A73DA5-764C-4386-B6F6-B351B4084421}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{99A73DA5-764C-4386-B6F6-B351B4084421}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{99A73DA5-764C-4386-B6F6-B351B4084421}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28469560-753C-4479-BCBE-F5DA599780A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28469560-753C-4479-BCBE-F5DA599780A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28469560-753C-4479-BCBE-F5DA599780A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28469560-753C-4479-BCBE-F5DA599780A7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

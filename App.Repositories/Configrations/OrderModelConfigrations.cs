@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace App.Repositories.Configrations;
 
-public class OrderHeaderModelConfigrations : IEntityTypeConfiguration<Order>
+public class OrderModelConfigrations : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
@@ -18,7 +18,8 @@ public class OrderHeaderModelConfigrations : IEntityTypeConfiguration<Order>
         builder.Property(s => s.State).IsRequired();
         builder.Property(p => p.PostalCode).IsRequired();
         builder.Property(p => p.Name).IsRequired();
-        
-        builder.Property(d => d.OrderDate).HasDefaultValueSql("GETDATE()");        
+        builder.Property(d => d.OrderDate).HasDefaultValueSql("GETDATE()");
+
+        builder.Property(o => o.OrderStatus).HasConversion<int>();
     }
 }

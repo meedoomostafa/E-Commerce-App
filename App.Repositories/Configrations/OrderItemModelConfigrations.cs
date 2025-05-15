@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace App.Repositories.Configrations;
 
-public class OrderDetailModelConfigrations : IEntityTypeConfiguration<OrderItem>
+public class OrderItemModelConfigrations : IEntityTypeConfiguration<OrderItem>
 {
     public void Configure(EntityTypeBuilder<OrderItem> builder)
     {
