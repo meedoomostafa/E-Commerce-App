@@ -12,6 +12,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
+Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

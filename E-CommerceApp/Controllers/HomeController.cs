@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.Security.Claims;
 using App.Models;
 using App.Models.ViewModels;
+using App.Repositories.AppRepository;
 using App.Repositories.AppRepository.RepositoriesInterfaces;
 using E_CommerceApp.Filters;
 using Microsoft.AspNetCore.Mvc;
@@ -49,7 +50,7 @@ public class HomeController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [CustomAuthorizeFilter]
+    [CustomAuthorizeFilter] // see here 
     public async Task<IActionResult> AddToCart(int productId , string? returnUrl)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity!;
