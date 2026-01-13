@@ -11,7 +11,7 @@ public class OrderItemModelConfigrations : IEntityTypeConfiguration<OrderItem>
         builder.HasKey(x => x.Id);
         builder.HasOne(x => x.OrderHeader)
             .WithMany().HasForeignKey(fk => fk.OrderHeaderId);
-        
+
         builder.HasOne(x => x.Product)
             .WithMany().HasForeignKey(fk => fk.ProductId);
     }

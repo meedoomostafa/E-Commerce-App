@@ -23,8 +23,8 @@ public class HomeController : Controller
 
     public async Task<IActionResult> Index()
     {
-        var products = await 
-            _unitOfWork.Product.GetAllAsync(include: q=>q.Include(c => c.Category)!);
+        var products = await
+            _unitOfWork.Product.GetAllAsync(include: q => q.Include(c => c.Category)!);
         return View(products);
     }
 
@@ -34,7 +34,7 @@ public class HomeController : Controller
             .GetByIdAsync(id!.Value
                 , include: q => q.Include(c => c.Category)!
                     .Include(r => r.Reviews)!);
-        
+
         if (product == null)
         {
             return NotFound();
@@ -51,20 +51,20 @@ public class HomeController : Controller
     [HttpPost]
     [ValidateAntiForgeryToken]
     [CustomAuthorizeFilter] // see here 
-    public async Task<IActionResult> AddToCart(int productId , string? returnUrl)
+    public async Task<IActionResult> AddToCart(int productId, string? returnUrl)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity!;
-        var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (userId == null)
         {
             return Unauthorized("user not found");
         }
-        
+
         var shoppingCart = await _unitOfWork.ShoppingCart
-            .GetFirstOrDefaultAsync(c => c.UserId == userId 
-                ,include: q=>q.Include(c => c.Items)!);
-        
+            .GetFirstOrDefaultAsync(c => c.UserId == userId
+                , include: q => q.Include(c => c.Items)!);
+
         if (shoppingCart == null)
         {
             shoppingCart = new ShoppingCart
@@ -74,7 +74,7 @@ public class HomeController : Controller
             };
             await _unitOfWork.ShoppingCart.Add(shoppingCart);
         }
-        
+
         var cartItem = shoppingCart.Items!
             .FirstOrDefault(c => c.ProductId == productId);
         if (cartItem != null)
@@ -92,7 +92,7 @@ public class HomeController : Controller
         }
         await _unitOfWork.SaveChanges();
         TempData["Success"] = "Product added to cart";
-        return LocalRedirect(returnUrl ?? Url.Action("Index","Home")!);;
+        return LocalRedirect(returnUrl ?? Url.Action("Index", "Home")!); ;
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -105,7 +105,7 @@ public class HomeController : Controller
 
         var products = await _unitOfWork.Product
             .GetAllAsync(filter: p => p.Name.Contains(query)
-            , include: q=>q.Include(c => c.Category)!);
+            , include: q => q.Include(c => c.Category)!);
         return View("SearchResults", products);
     }
 

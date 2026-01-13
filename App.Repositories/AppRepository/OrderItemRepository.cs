@@ -4,7 +4,7 @@ using App.Repositories.Database;
 
 namespace App.Repositories.AppRepository;
 
-public class OrderItemRepository : Repository<OrderItem> , IOrderItemRepository
+public class OrderItemRepository : Repository<OrderItem>, IOrderItemRepository
 {
     private readonly AppDbContext _context;
     public OrderItemRepository(AppDbContext context) : base(context)
@@ -14,6 +14,6 @@ public class OrderItemRepository : Repository<OrderItem> , IOrderItemRepository
 
     public async Task Update(OrderItem entity)
     {
-        
+
     }
 }

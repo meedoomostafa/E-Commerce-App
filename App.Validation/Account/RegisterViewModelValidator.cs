@@ -5,7 +5,7 @@ using FluentValidation;
 
 namespace App.Validation;
 
-public class RegisterViewModelValidator : AbstractValidator<RegisterViewModel> 
+public class RegisterViewModelValidator : AbstractValidator<RegisterViewModel>
 {
     public RegisterViewModelValidator()
     {

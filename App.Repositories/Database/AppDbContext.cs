@@ -11,7 +11,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
-        
+
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,7 +28,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
         new OrderItemModelConfigrations().Configure(modelBuilder.Entity<OrderItem>());
         new OrderModelConfigrations().Configure(modelBuilder.Entity<Order>());
     }
-    
+
     public DbSet<Category> Categories { get; set; }
     public DbSet<Product> Products { get; set; }
     public DbSet<ShoppingCart> ShoppingCarts { get; set; }
@@ -36,7 +36,7 @@ public class AppDbContext : IdentityDbContext<AppUser>
     public DbSet<Review> Reviews { get; set; }
     public DbSet<Wishlist> Wishlists { get; set; } // Added
     public DbSet<WishlistItem> WishlistItems { get; set; } // Added
-    
+
     public DbSet<OrderItem> OrderItems { get; set; }
     public DbSet<Order> Orders { get; set; }
 }

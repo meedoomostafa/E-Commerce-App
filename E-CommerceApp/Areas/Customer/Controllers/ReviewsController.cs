@@ -29,15 +29,15 @@ public class ReviewsController : Controller
         var rating = model.Rating;
         var comment = model.Comment;
         var url = model.Url;
-                
-        var user = (ClaimsIdentity) User.Identity!;
+
+        var user = (ClaimsIdentity)User.Identity!;
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
         if (string.IsNullOrEmpty(userId))
         {
             return Unauthorized("user not found");
         }
-        
+
         var product = await _unitOfWork.Product.GetByIdAsync(productId);
         if (product == null)
         {
@@ -56,10 +56,10 @@ public class ReviewsController : Controller
             Rating = rating,
             Comment = comment
         };
-        
+
         product.Reviews.Add(review);
         await _unitOfWork.Product.Update(product);
         await _unitOfWork.SaveChanges();
-        return Redirect(url ?? Url.Action("Details","Home",new {area = "", id = productId})!);
+        return Redirect(url ?? Url.Action("Details", "Home", new { area = "", id = productId })!);
     }
 }

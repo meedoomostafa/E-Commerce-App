@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace App.Repositories.AppRepository;
 
-public class ReviewRepository : Repository<Review> , IReviewRepository 
+public class ReviewRepository : Repository<Review>, IReviewRepository
 {
     private readonly AppDbContext _context;
     public ReviewRepository(AppDbContext context) : base(context)

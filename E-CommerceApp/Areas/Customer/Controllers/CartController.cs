@@ -11,12 +11,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Areas.Customer.Controllers;
+
 [Area(SD.RoleCustomer)]
 [Authorize]
 public class CartController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
-    public CartController(IUnitOfWork unitOfWork , UserManager<AppUser> userManager)
+    public CartController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
     {
         _unitOfWork = unitOfWork;
     }
@@ -24,15 +25,15 @@ public class CartController : Controller
     public async Task<IActionResult> Index()
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity!;
-        var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
         if (string.IsNullOrEmpty(userId))
         {
             return NotFound($"user not found");
         }
-        
+
         var shoppingCart = await _unitOfWork.ShoppingCart
-            .GetFirstOrDefaultAsync(c => c.UserId == userId 
-                ,include: q => q.Include(i => i.Items)!
+            .GetFirstOrDefaultAsync(c => c.UserId == userId
+                , include: q => q.Include(i => i.Items)!
                     .ThenInclude(p => p.Product)!);
 
         if (shoppingCart == null || shoppingCart.Items == null)
@@ -40,19 +41,19 @@ public class CartController : Controller
             ViewBag.Message = "Cart is empty";
             return View(new List<CartItem>());
         }
-        
+
         return View(shoppingCart.Items);
     }
 
 
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> RemoveFromCart(RemoveFromCartViewModel model)
     {
         if (!User.Identity.IsAuthenticated)
         {
-            
+
         }
         var user = (ClaimsIdentity)User.Identity!;
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -71,13 +72,13 @@ public class CartController : Controller
         {
             return NotFound();
         }
-        
+
         _unitOfWork.CartItem.Delete(cartItem);
         await _unitOfWork.SaveChanges();
-        
+
         TempData["Success"] = "Product removed from cart";
-        
-        return Redirect(url ?? Url.Action("Index","Cart")!);
+
+        return Redirect(url ?? Url.Action("Index", "Cart")!);
     }
 
     [HttpPost]
@@ -86,53 +87,53 @@ public class CartController : Controller
     {
         var cartItemId = cartItemObject.CartItemId;
         var url = cartItemObject.Url;
-        
+
         var cartItem = await _unitOfWork.CartItem
             .GetFirstOrDefaultAsync(a => a.Id == cartItemId);
-        
+
         if (cartItem == null)
         {
             return NotFound();
         }
-        
+
         if (cartItem.Quantity > 1)
         {
             cartItem.Quantity -= 1;
-            await _unitOfWork.CartItem.Update(cartItem);  
+            await _unitOfWork.CartItem.Update(cartItem);
         }
         else
         {
             _unitOfWork.CartItem.Delete(cartItem);
         }
         await _unitOfWork.SaveChanges();
-        
+
         TempData["Success"] = "Product quantity decremented";
-        
-        return Redirect(url ?? Url.Action("Index","Cart")!);
+
+        return Redirect(url ?? Url.Action("Index", "Cart")!);
     }
-    
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> IncrementQuantity(UpdateQuantityViewModel cartItemObject)
     {
         var cartItemId = cartItemObject.CartItemId;
         var url = cartItemObject.Url;
-        
+
         var cartItem = await _unitOfWork.CartItem
             .GetFirstOrDefaultAsync(a => a.Id == cartItemId);
-        
+
         if (cartItem == null)
         {
             return NotFound();
         }
-        
+
         cartItem.Quantity += 1;
-        await _unitOfWork.CartItem.Update(cartItem);  
+        await _unitOfWork.CartItem.Update(cartItem);
         await _unitOfWork.SaveChanges();
-        
+
         TempData["Success"] = "Product quantity incremented";
-        
-        return Redirect(url ?? Url.Action("Index","Cart")!);
+
+        return Redirect(url ?? Url.Action("Index", "Cart")!);
     }
 
     [HttpPost]
@@ -145,15 +146,15 @@ public class CartController : Controller
         {
             return Unauthorized("user not found");
         }
-        
+
         var shoppingCart = await _unitOfWork.ShoppingCart
             .GetFirstOrDefaultAsync(c => c.UserId == userId);
-        
+
         _unitOfWork.ShoppingCart.Delete(shoppingCart);
         await _unitOfWork.SaveChanges();
-        
+
         TempData["Success"] = "Cart cleared";
-        
-        return Redirect(returnUrl ?? Url.Action("Index","Home")!);
+
+        return Redirect(returnUrl ?? Url.Action("Index", "Home")!);
     }
 }

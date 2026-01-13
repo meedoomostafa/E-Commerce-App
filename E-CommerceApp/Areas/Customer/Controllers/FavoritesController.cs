@@ -24,39 +24,39 @@ public class FavoritesController : Controller
     {
         var user = (ClaimsIdentity)User.Identity!;
         var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
+
         if (string.IsNullOrEmpty(userId))
         {
             return Unauthorized("user not found");
         }
-        
+
         var wishlist = await _unitOfWork.Wishlist
-            .GetFirstOrDefaultAsync(c=>c.UserId == userId 
-                ,include: q => q.Include(i => i.Items)!
+            .GetFirstOrDefaultAsync(c => c.UserId == userId
+                , include: q => q.Include(i => i.Items)!
                     .ThenInclude(p => p.Product)!);
-        
+
         var items = wishlist?.Items ?? new List<WishlistItem>();
-        
-        return View(items);        
+
+        return View(items);
     }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ToggleFavorite(FavoriteRequestViewModel request)
     {
         var claimsIdentity = (ClaimsIdentity)User.Identity!;
-        var userId =  claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        
+        var userId = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         var productId = request.ProductId;
         var returnUrl = request.ReturnUrl;
-        
+
         if (string.IsNullOrEmpty(userId))
         {
             return Unauthorized("user not logged in");
         }
-        
+
         var wishList = await _unitOfWork.Wishlist
-            .GetFirstOrDefaultAsync(c=>c.UserId == userId 
-                ,include: q=>q.Include(c => c.Items)!);
+            .GetFirstOrDefaultAsync(c => c.UserId == userId
+                , include: q => q.Include(c => c.Items)!);
 
         if (wishList == null)
         {
@@ -67,9 +67,9 @@ public class FavoritesController : Controller
             await _unitOfWork.Wishlist.Add(wishList);
             await _unitOfWork.SaveChanges();
         }
-        
+
         var wishListItem = wishList.Items?.FirstOrDefault(c => c.ProductId == productId);
-        
+
         bool isFavorite = false;
         if (wishListItem == null)
         {
@@ -89,7 +89,7 @@ public class FavoritesController : Controller
         }
         await _unitOfWork.SaveChanges();
         TempData["Success"] = isFavorite ? "Product added to wishlist" : "Product removed from wishlist";
-        return Redirect(returnUrl ?? Url.Action("Index","Home")!);
+        return Redirect(returnUrl ?? Url.Action("Index", "Home")!);
     }
 
     [HttpPost]
@@ -97,21 +97,21 @@ public class FavoritesController : Controller
     public async Task<IActionResult> ClearWishlist(string? returnUrl)
     {
         var user = (ClaimsIdentity)User.Identity!;
-        var userId = user.FindFirst(ClaimTypes.NameIdentifier )?.Value;
-        
+        var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
         if (string.IsNullOrEmpty(userId))
         {
             return Unauthorized("user not found");
         }
-        
+
         var wishlist = await _unitOfWork.Wishlist
             .GetFirstOrDefaultAsync(c => c.UserId == userId);
-        
+
         _unitOfWork.Wishlist.Delete(wishlist);
         await _unitOfWork.SaveChanges();
-        
+
         TempData["Success"] = "Wishlist cleared";
-        
-        return Redirect(returnUrl ?? Url.Action("Index","Home")!);
+
+        return Redirect(returnUrl ?? Url.Action("Index", "Home")!);
     }
 }

@@ -12,7 +12,7 @@ public class ShoppingCartModelConfigrations : IEntityTypeConfiguration<ShoppingC
         builder.HasOne(usr => usr.User)
             .WithOne(sc => sc.ShoppingCart)
             .HasForeignKey<ShoppingCart>(sc => sc.UserId);
-        
+
         builder.HasMany(x => x.Items).WithOne(x => x.ShoppingCart);
     }
 }

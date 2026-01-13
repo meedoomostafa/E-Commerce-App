@@ -20,7 +20,7 @@ public class CategoryController : Controller
     public async Task<IActionResult> Index()
     {
         var categories = await _unitOfWork.Category.GetAllAsync();
-        return View(nameof(Index),categories);
+        return View(nameof(Index), categories);
     }
 
     public IActionResult Create()

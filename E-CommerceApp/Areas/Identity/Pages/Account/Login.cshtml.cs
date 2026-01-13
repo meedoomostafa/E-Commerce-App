@@ -45,7 +45,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
         [TempData]
         public string ErrorMessage { get; set; }
 
-        
+
 
         public async Task OnGetAsync(string returnUrl = null)
         {

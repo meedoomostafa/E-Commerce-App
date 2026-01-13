@@ -14,7 +14,7 @@ public class WishlistRepository : Repository<Wishlist>, IWishlistRepository
     {
         _context = context;
     }
-    
+
     public async Task Update(Wishlist entity)
     {
         var wishlist = await _context.Wishlists.FirstOrDefaultAsync(w => w.Id == entity.Id);

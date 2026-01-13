@@ -16,7 +16,7 @@ public class AppUserModelConfigrations : IEntityTypeConfiguration<AppUser>
         builder.Property(x => x.StreetAddress).HasMaxLength(200);
         builder.Property(x => x.City).HasMaxLength(50);
         builder.Property(x => x.State).HasMaxLength(50);
-        
+
         builder.Ignore(x => x.Role);
     }
 }

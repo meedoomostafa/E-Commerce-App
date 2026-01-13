@@ -26,13 +26,13 @@ public class ProductController : Controller
         try
         {
             var products = await _unitOfWork.Product
-                .GetAllAsync(null,q=> q.Include(p => p.Category));
-            return View(nameof(Index),products);
+                .GetAllAsync(null, q => q.Include(p => p.Category));
+            return View(nameof(Index), products);
         }
         catch (Exception)
         {
             TempData["Error"] = "Something went wrong";
-            return View(nameof(Index),new List<Product>());
+            return View(nameof(Index), new List<Product>());
         }
     }
 
@@ -45,7 +45,7 @@ public class ProductController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Product product,IFormFile imageFile)
+    public async Task<IActionResult> Create(Product product, IFormFile imageFile)
     {
         if (ModelState.IsValid)
         {
@@ -60,7 +60,7 @@ public class ProductController : Controller
                         ViewBag.CategoryList = new SelectList(categories, "Id", "Name");
                         return View(product);
                     }
-                    var allowedExtensions = new [] { ".jpg", ".png", ".gif" , ".jpeg" };
+                    var allowedExtensions = new[] { ".jpg", ".png", ".gif", ".jpeg" };
                     var extension = Path.GetExtension(imageFile.FileName).ToLower();
                     if (!allowedExtensions.Contains(extension))
                     {
@@ -94,11 +94,11 @@ public class ProductController : Controller
             {
                 TempData["Error"] = $"An error occured : {e.Message}";
             }
-            return RedirectToAction(nameof(Index));    
+            return RedirectToAction(nameof(Index));
         }
         var Categories = await _unitOfWork.Category.GetAllAsync();
         ViewBag.Categories = new SelectList(Categories, "Id", "Name");
-        return View(nameof(Create),product);
+        return View(nameof(Create), product);
     }
 
     public async Task<IActionResult> Edit(int? id)
@@ -119,13 +119,13 @@ public class ProductController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id , Product product , IFormFile? imageFile)
+    public async Task<IActionResult> Edit(int id, Product product, IFormFile? imageFile)
     {
         if (id != product.Id)
         {
             return NotFound();
         }
-        
+
         if (ModelState.IsValid)
         {
             try
@@ -201,7 +201,7 @@ public class ProductController : Controller
             return NotFound();
         }
         var product = await _unitOfWork.Product
-            .GetByIdAsync(id.Value,q=>q.Include(p => p.Category));
+            .GetByIdAsync(id.Value, q => q.Include(p => p.Category));
         if (product == null)
         {
             return NotFound();
@@ -249,13 +249,13 @@ public class ProductController : Controller
             return NotFound();
         }
         var product = await _unitOfWork.Product
-            .GetByIdAsync(id.Value,q=>q.Include(p => p.Category));
+            .GetByIdAsync(id.Value, q => q.Include(p => p.Category));
 
         if (product == null)
         {
             return NotFound();
         }
-        
-        return View(nameof(Detail),product);
+
+        return View(nameof(Detail), product);
     }
 }

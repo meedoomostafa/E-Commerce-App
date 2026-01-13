@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace App.Repositories.AppRepository;
 
-public class ProductRepository : Repository<Product> , IProductRepository
+public class ProductRepository : Repository<Product>, IProductRepository
 {
     private readonly AppDbContext _context;
     public ProductRepository(AppDbContext context) : base(context)

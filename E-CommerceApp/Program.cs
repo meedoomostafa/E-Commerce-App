@@ -21,10 +21,10 @@ builder.Services.AddRazorPages();
 builder.Services.AddSingleton<IEmailSender, IdentityEmailService>();
 
 builder.Services.AddDbContext<AppDbContext>(
-    options => options.UseSqlServer(builder.Configuration.GetConnectionString("CS"))
+    options => options.UseSqlServer(builder.Configuration.GetConnectionString("Production"))
     );
 
-builder.Services.AddIdentity<AppUser,IdentityRole>()
+builder.Services.AddIdentity<AppUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
 builder.Services.ConfigureApplicationCookie(options =>

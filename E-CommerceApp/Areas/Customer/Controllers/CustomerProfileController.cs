@@ -9,35 +9,36 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace E_CommerceApp.Areas.Customer.Controllers;
+
 [Area(SD.RoleCustomer)]
 [Authorize]
 public class CustomerProfileController : Controller
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly UserManager<AppUser> _userManager;
-    public CustomerProfileController(IUnitOfWork unitOfWork , UserManager<AppUser> userManager)
+    public CustomerProfileController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
     {
         _unitOfWork = unitOfWork;
         _userManager = userManager;
     }
-    
+
     public async Task<IActionResult> Index()
     {
         var user = await _userManager.GetUserAsync(User);
-        
+
         if (user == null)
         {
             return NotFound($"user not found");
         }
-        
+
         var shoppingCart = await _unitOfWork.ShoppingCart
             .GetFirstOrDefaultAsync(c => c.UserId == user.Id
-                ,include: q=>q.Include(c => c.Items)
+                , include: q => q.Include(c => c.Items)
                     .ThenInclude(i => i.Product));
-        
-        var wishList = await _unitOfWork.Wishlist.GetFirstOrDefaultAsync(c=>c.UserId == user.Id
-                ,include: q=>q.Include(c => c.Items)
-                    .ThenInclude(p => p.Product));;
+
+        var wishList = await _unitOfWork.Wishlist.GetFirstOrDefaultAsync(c => c.UserId == user.Id
+                , include: q => q.Include(c => c.Items)
+                    .ThenInclude(p => p.Product)); ;
 
         ProfileViewModel profileDataViewModel = new ProfileViewModel
         {
@@ -45,7 +46,7 @@ public class CustomerProfileController : Controller
             CartItems = shoppingCart?.Items ?? new List<CartItem>(),
             WishlistItems = wishList?.Items ?? new List<WishlistItem>()
         };
-        
+
         return View(profileDataViewModel);
     }
 
@@ -85,11 +86,11 @@ public class CustomerProfileController : Controller
         user.City = model.City;
         user.State = model.State;
         user.StreetAddress = model.StreetAddress;
-        
+
         await _userManager.UpdateAsync(user);
         await _unitOfWork.SaveChanges();
         TempData["Success"] = "Profile updated successfully";
-        
+
         return RedirectToAction(nameof(Index));
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace App.Repositories.AppRepository;
 
-public class ShoppingCartRepository : Repository<ShoppingCart> , IShoppingCartRepository
+public class ShoppingCartRepository : Repository<ShoppingCart>, IShoppingCartRepository
 {
     private readonly AppDbContext _context;
 
@@ -25,5 +25,5 @@ public class ShoppingCartRepository : Repository<ShoppingCart> , IShoppingCartRe
         }
     }
 
-    
+
 }

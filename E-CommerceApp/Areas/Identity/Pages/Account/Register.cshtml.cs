@@ -32,7 +32,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
             RoleManager<IdentityRole> roleManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender,
-            IUnitOfWork unitOfWork) 
+            IUnitOfWork unitOfWork)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,7 +42,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
             _unitOfWork = unitOfWork;
         }
 
-        [BindProperty] 
+        [BindProperty]
         public RegisterViewModel Input { get; set; }
 
         public string ReturnUrl { get; set; }
@@ -69,7 +69,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                     Selected = i == SD.RoleCustomer
                 })
             };
-            
+
             ReturnUrl = returnUrl;
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
@@ -78,7 +78,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            
+
             if (ModelState.IsValid)
             {
                 var user = new AppUser
@@ -93,9 +93,9 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                     State = Input.State,
                     PostalCode = Input.ZipCode,
                 };
-                
+
                 var result = await _userManager.CreateAsync(user, Input.Password);
-                
+
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
@@ -108,7 +108,7 @@ namespace E_CommerceApp.Areas.Identity.Pages.Account
                     {
                         await _userManager.AddToRoleAsync(user, SD.RoleCustomer);
                     }
-                    
+
                     // Create ShoppingCart and Wishlist for the new user
                     var shoppingCart = new ShoppingCart
                     {

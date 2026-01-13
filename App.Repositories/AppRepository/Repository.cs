@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Query;
 
 namespace App.Repositories.AppRepository;
 
-public class Repository<T> : IRepository<T>  where T : class
+public class Repository<T> : IRepository<T> where T : class
 {
     private readonly AppDbContext _context;
 
@@ -15,7 +15,7 @@ public class Repository<T> : IRepository<T>  where T : class
     {
         _context = context;
     }
-    
+
     public async Task Add(T entity)
     {
         await _context.AddAsync(entity);
@@ -34,7 +34,7 @@ public class Repository<T> : IRepository<T>  where T : class
 
     public IEnumerable<T> GetAll(Func<IQueryable<T>, IIncludableQueryable<T, object>> include = null)
     {
-        var  query = _context.Set<T>().AsQueryable();
+        var query = _context.Set<T>().AsQueryable();
         if (include != null)
         {
             query = include(query);
@@ -43,12 +43,12 @@ public class Repository<T> : IRepository<T>  where T : class
     }
 
     public async Task<T?> GetByIdAsync(int id, Func<IQueryable<T>
-        , IIncludableQueryable<T, object>> include = null , bool isTracking = true)
+        , IIncludableQueryable<T, object>> include = null, bool isTracking = true)
     {
         IQueryable<T> query = _context.Set<T>();
         if (!isTracking)
         {
-            query = query.AsNoTracking();           
+            query = query.AsNoTracking();
         }
         if (include != null)
         {
@@ -58,18 +58,18 @@ public class Repository<T> : IRepository<T>  where T : class
     }
 
     public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, Func<IQueryable<T>
-        , IIncludableQueryable<T, object>>? include = null , bool isTracking = true)
+        , IIncludableQueryable<T, object>>? include = null, bool isTracking = true)
     {
         IQueryable<T> query = _context.Set<T>();
         if (!isTracking)
         {
-            query = query.AsNoTracking();           
+            query = query.AsNoTracking();
         }
         if (filter != null)
         {
             query = query.Where(filter);
         }
-        
+
         if (include != null)
         {
             query = include(query);
@@ -78,12 +78,12 @@ public class Repository<T> : IRepository<T>  where T : class
     }
 
     public Task<T?> GetFirstOrDefaultAsync(Expression<Func<T, bool>> filter
-        , Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null , bool isTracking = true)
+        , Func<IQueryable<T>, IIncludableQueryable<T, object>>? include = null, bool isTracking = true)
     {
         IQueryable<T> query = _context.Set<T>();
         if (!isTracking)
         {
-            query = query.AsNoTracking();            
+            query = query.AsNoTracking();
         }
         if (include != null)
         {

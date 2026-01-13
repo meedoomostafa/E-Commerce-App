@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace E_CommerceApp.Filters;
 
-public class CustomAuthorizeFilter : Attribute , IAuthorizationFilter 
+public class CustomAuthorizeFilter : Attribute, IAuthorizationFilter
 {
     public void OnAuthorization(AuthorizationFilterContext context)
     {
@@ -12,7 +12,7 @@ public class CustomAuthorizeFilter : Attribute , IAuthorizationFilter
         {
             var returnUrl = context.HttpContext.Request.Path + context.HttpContext.Request.QueryString;
 
-            if (context.HttpContext.Request.Method == "POST" && 
+            if (context.HttpContext.Request.Method == "POST" &&
                 context.HttpContext.Request.Path == "/Home/AddToCart")
             {
                 var form = context.HttpContext.Request.Form;

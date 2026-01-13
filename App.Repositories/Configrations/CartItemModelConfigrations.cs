@@ -13,7 +13,7 @@ public class CartItemModelConfigrations : IEntityTypeConfiguration<CartItem>
         builder.HasOne(sh => sh.ShoppingCart)
             .WithMany(x => x.Items)
             .HasForeignKey(Id => Id.ShoppingCartId);
-        
+
         builder.HasOne(p => p.Product)
             .WithMany(ca => ca.CartItems)
             .HasForeignKey(Id => Id.ProductId);
